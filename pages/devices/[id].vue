@@ -45,6 +45,7 @@ const fetchDevice = async () => {
     console.log(error);
     errorDescription.value = error.response.data.message;
     pageNotFound.value = true;
+    // hasnaaadel492/nuxtApp
   }
 };
 

@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "vuetify-nuxt-module",
     "@vueuse/nuxt",
+    'maz-ui/nuxt'
   ],
 
   i18n: {

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import loadingGif from "@/assets/images/newLogo2.png";
-import axios from "@axios";
 import { useHead } from "@unhead/vue";
 
 const subtitle = ref("");

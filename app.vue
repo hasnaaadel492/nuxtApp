@@ -11,7 +11,7 @@ const isAppRtl = computed(() => lang.value === "ar");
 </script>
 
 <template>
-  <div
+  <NuxtLayout
     :dir="isAppRtl ? 'rtl' : 'ltr'"
     :class="{ rtl: isAppRtl, ltr: !isAppRtl }"
   >
@@ -19,7 +19,7 @@ const isAppRtl = computed(() => lang.value === "ar");
     <NuxtPage />
     <AppFooter />
     <ScrollToTop />
-  </div>
+</NuxtLayout>
 </template>
 
 <style scoped>

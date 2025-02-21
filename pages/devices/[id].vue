@@ -102,7 +102,6 @@ const goToWhatsapp = () => {
     </div>
 
     <img class="hero-circel1" src="@/assets/images/hero-circle1.svg" alt="" />
-    {{ pageNotFound }}
     <div
       v-if="pageNotFound"
       class="d-flex"

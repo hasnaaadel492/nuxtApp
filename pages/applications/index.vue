@@ -1,20 +1,23 @@
 <script lang="ts" setup>
+import AppHeading from "@/@core/components/AppHeading.vue";
 const subtitle = "applications";
 const mainPargraph = "mainPargraph";
 onMounted(() => {
   const useLang = () => useState("lang", () => "ar"); // Default language
-  const lang = useLang().value; // Get language state  if (lang === 'en') {
-  const selectors = [".hero-circel1", ".hero-circel2"];
+  const lang = useLang().value;
+  if (lang === "en") {
+    const selectors = [".hero-circel1", ".hero-circel2"];
 
-  selectors.forEach((selector) => {
-    const elements = document.querySelectorAll(
-      `.applicationsComponent ${selector}`
-    );
+    selectors.forEach((selector) => {
+      const elements = document.querySelectorAll(
+        `.applicationsComponent ${selector}`
+      );
 
-    elements.forEach((element) => {
-      element.style.transform = "rotate(180deg)";
+      elements.forEach((element) => {
+        element.style.transform = "rotate(180deg)";
+      });
     });
-  });
+  }
 });
 </script>
 

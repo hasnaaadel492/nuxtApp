@@ -1,25 +1,23 @@
 <script lang="ts" setup>
-
-import AdvantagesComponent from "~/components/advantages/AdvantagesComponent"
+import AdvantagesComponent from "~/components/advantages/AdvantagesComponent";
 onMounted(() => {
-const useLang =  ()=>useState("lang" , ()=>"ar");
-const lang =useLang.value();
-  
-  
-  if (lang === 'en') {
-    const selectors = ['.hero-circel1', '.hero-circel2']
+  const useLang = () => useState("lang", () => "ar"); // Default language
+  const lang = useLang().value;
+
+  if (lang === "en") {
+    const selectors = [".hero-circel1", ".hero-circel2"];
 
     selectors.forEach((selector) => {
       const elements = document.querySelectorAll(
         `.advantagesComponent ${selector}`
-      )
+      );
 
       elements.forEach((element) => {
-        element.style.transform = 'rotate(180deg)'
-      })
-    })
+        element.style.transform = "rotate(180deg)";
+      });
+    });
   }
-})
+});
 </script>
 
 <template>
@@ -33,7 +31,7 @@ const lang =useLang.value();
 <style lang="scss">
 .advantagesComponent {
   position: relative;
-  background-image: url('@/assets/images/hero1.svg') !important;
+  background-image: url("@/assets/images/hero1.svg") !important;
   background-repeat: no-repeat;
   background-size: contain;
   inline-size: 100%;

@@ -1,57 +1,68 @@
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
+import { useNuxtApp, useFetch } from "#app";
 
 // Data
-const advantages = ref([])
-const totalAdvantages = ref(0)
+const advantages = ref<any[]>([]);
+const totalAdvantages = ref<number>(0);
 
-const subtitle = 'advantages'
-const mainPargraph = 'mainPargraph'
+const subtitle = "advantages";
+const mainPargraph = "mainPargraph";
+
 // Refs for card elements
-const cardRefs = ref([])
+const cardRefs = ref<(HTMLElement | null)[]>([]);
+const maxHeight = ref<number>(0);
 
 // Fetch advantages function
-const fetchAdvantages =async () => {
-    const {$api}=useNuxtApp()
-    const data = await $api.<{}>(
-        "/website-section/website_sections/?section_type[]=advantages"
-    )
- try {
-    advantages.value = data.body.website_sections.data
-    totalAdvantages.value = data.body.website_sections.paginate.total
+const btnLoading = ref(false);
+
+const fetchAdvantages = async () => {
+  try {
+    btnLoading.value = true;
+    const { $api } = useNuxtApp();
+
+    const data = await $api<{}>(
+      `/website-section/website_sections/?section_type[]=advantages`
+    );
+
+    // ✅ Check response structure before accessing data
+
+    advantages.value = data.body.website_sections.data || [];
+    totalAdvantages.value = data.body.website_sections.paginate?.total || 0;
+  } catch (error) {
+    console.error("Error fetching devices:", error);
+  } finally {
+    btnLoading.value = false;
   }
-}
+};
 
-const maxHeight = ref(0)
-
+// Update max height for cards
 const updateMaxHeight = () => {
   nextTick(() => {
-    const heights = cardRefs.value.map((el) => el?.offsetHeight || 0)
-    maxHeight.value = Math.max(...heights)
+    const heights = cardRefs.value.map((el) => el?.offsetHeight || 0);
+    maxHeight.value = Math.max(...heights);
 
     cardRefs.value.forEach((el) => {
-      if (el) {
-        el.style.height = `${maxHeight.value}px`
-      }
-    })
-  })
-}
+      if (el) el.style.height = `${maxHeight.value}px`;
+    });
+  });
+};
 
 const handleResize = () => {
-  updateMaxHeight()
-}
+  updateMaxHeight();
+};
 
 onMounted(() => {
-  fetchAdvantages()
-  window.addEventListener('resize', handleResize)
-  updateMaxHeight()
-})
+  fetchAdvantages();
+  window.addEventListener("resize", handleResize);
+});
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', handleResize)
-})
+  window.removeEventListener("resize", handleResize);
+});
 
-watch(() => advantages.value, updateMaxHeight, { deep: true })
+// Watch advantages update
+watch(advantages, updateMaxHeight, { deep: true });
 </script>
 
 <template>
@@ -79,7 +90,7 @@ watch(() => advantages.value, updateMaxHeight, { deep: true })
         >
           <div class="card" style="flex-direction: column">
             <div class="iconCircle">
-              <img :src="card.image" />
+              <img :src="card.image" alt="Advantage Icon" />
             </div>
             <h6>{{ card.title }}</h6>
             <p>{{ card.description }}</p>
@@ -88,16 +99,14 @@ watch(() => advantages.value, updateMaxHeight, { deep: true })
       </VRow>
     </VContainer>
 
-    <VContainer>
-      <div
-        v-if="totalAdvantages === 0"
-        class="d-flex justify-center align-center"
-      >
+    <!-- No advantages found -->
+    <VContainer v-if="totalAdvantages === 0">
+      <div class="d-flex justify-center align-center">
         <p
           class="mainPargraph text-start"
-          style="font-size: 26; font-weight: 600; margin-block-end: 7px"
+          style="font-size: 26px; font-weight: 600; margin-block-end: 7px"
         >
-          {{ $t('No advantages found') }}
+          {{ $t("No_advantages_found") }}
         </p>
       </div>
     </VContainer>
@@ -111,17 +120,10 @@ watch(() => advantages.value, updateMaxHeight, { deep: true })
   .cards {
     color: #000;
 
-    // gap: 5px;
-
     .card {
       padding: 23px;
       border: 1px solid #70a1e5;
       border-radius: 16px;
-
-      // animation: fade-in ease-in-out;
-      animation-range-end: 200px;
-      animation-range-start: cover;
-      animation-timeline: view();
       background: transparent;
       block-size: 100% !important;
       gap: 2px;
@@ -135,7 +137,6 @@ watch(() => advantages.value, updateMaxHeight, { deep: true })
         box-shadow: #70a1e5 0 0 5px 2px;
         color: #fff;
         transform: scale(1.06);
-        transition: 0.5s all ease-in-out;
       }
 
       .iconCircle {
@@ -189,7 +190,6 @@ watch(() => advantages.value, updateMaxHeight, { deep: true })
 
       &:hover {
         transform: scale(1.03) !important;
-        transition: 0.5s all ease-in-out;
       }
 
       .iconCircle {

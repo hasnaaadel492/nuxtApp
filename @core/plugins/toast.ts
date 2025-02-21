@@ -1,13 +1,9 @@
-import { useToast } from "maz-ui";
+const toast = useToast();
 
-const notify = (msg: string, status: boolean, autoClose: number) => {
-  const toast = useToast(); // Get the toast instance
-
-  toast.open({
-    message: msg,
-    type: status ? "success" : "error",
+const notify = (msg: string, status: boolean, autoClose: number = 3000) => {
+  toast[status ? "success" : "error"](msg, {
     position: "bottom-right",
-    duration: autoClose || 3000,
+    duration: autoClose,
   });
 };
 

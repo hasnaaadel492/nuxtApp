@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { useAuthStore } from "@/plugins/authStore";
+import { useAuthStore } from "~/stores/authStore";
 import {
   emailValidator,
   englishAlphaValidator,
   requiredValidator,
 } from "@/@core/plugins/validators";
 import { VForm } from "vuetify/components/VForm";
-
+import MainButton from "@/@core/components/buttons/MainButton.vue";
 const email = ref("");
 const password = ref("");
 const isPasswordVisible = ref(false);
@@ -103,6 +103,7 @@ onMounted(() => {
               <label>{{ t("email") }}</label>
 
               <VTextField
+                variant="outlined"
                 v-model="email"
                 placeholder="johndoe@email.com"
                 type="email"
@@ -125,6 +126,7 @@ onMounted(() => {
               </div>
 
               <VTextField
+                variant="outlined"
                 v-model="password"
                 placeholder="············"
                 :type="isPasswordVisible ? 'text' : 'password'"

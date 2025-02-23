@@ -21,6 +21,7 @@
     "pinia": "^3.0.1",
     "vue": "latest",
     "vue-router": "latest",
+    "vue3-carousel-nuxt": "^1.1.5",
     "vuetify-nuxt-module": "^0.18.3"
   },
   "devDependencies": {

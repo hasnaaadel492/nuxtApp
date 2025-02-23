@@ -27,7 +27,6 @@ const scrollToTop = () => {
         icon="mdi-arrow-up"
         style="background: none !important; color: #fff"
       />
-      arrow
     </VBtn>
   </VScaleTransition>
 </template>

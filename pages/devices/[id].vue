@@ -9,8 +9,7 @@ const subtitle = ref("");
 const mainPargraph = "mainPargraph";
 
 const route = useRoute();
-const phoneNumber = "aa5";
-// const phoneNumber = localStorage.getItem("MainPhone");
+const phoneNumber = useCookie("MainPhone").value;
 
 const useLang = () => useState("lang", () => "ar"); // Default language
 const lang = useLang().value; // Get language state
@@ -22,10 +21,6 @@ const message =
 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
   message
 )} `;
-
-const buttonContent = computed(() => {
-  return "know-prices-and-buy";
-});
 
 const device_section = ref({});
 const device_section_status = ref(1);

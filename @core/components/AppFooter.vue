@@ -174,7 +174,8 @@ const getContacts = async () => {
     about_us.value.description = data.body.about_us.description;
     about_us.value.image = data.body.about_us.image;
 
-    localStorage.setItem("MainPhone", data.body.contacts.phone.main);
+    const mainPhone = useCookie("MainPhone");
+    mainPhone.value = data.body.contacts.phone.main;
   } catch (error) {
     console.error("Error fetching company info:", error);
   }

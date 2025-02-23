@@ -8,7 +8,7 @@ import contact_twitter from "@/assets/images/contacts/contact_twitter.svg";
 import contact_whatsapp from "@/assets/images/contacts/contact_whatsapp.svg";
 
 import { useGeolocation } from "@/@core/composable/useGeolocation ";
-
+import { useCookie } from "#app";
 const { latitude, longitude, error } = useGeolocation();
 
 const contacts = ref({
@@ -50,8 +50,8 @@ const getContactInfo = async () => {
     socials.value.twitter = data.body.social.twitter;
     socials.value.facebook = data.body.social.facebook;
     socials.value.instagram = data.body.social.instagram;
-
-    // localStorage.setItem("MainPhone", data.body.contacts.phone.main);
+    const mainPhone = useCookie("MainPhone");
+    mainPhone.value = data.body.contacts.phone.main;
   } catch (error) {
     console.error("Error fetching company info:", error);
   }

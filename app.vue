@@ -2,6 +2,8 @@
 import { computed } from "vue";
 import AppFooter from "~/@core/components/AppFooter.vue";
 import AppHeader from "~/@core/components/AppHeader.vue";
+import ScrollToTop from "~/@core/components/ScrollToTop.vue";
+import WhatsAppIcon from "@/@core/components/WhatsAppIcon.vue";
 
 const useLang = () => useState("lang", () => "ar"); // Default language
 const lang = useLang();
@@ -18,8 +20,9 @@ const isAppRtl = computed(() => lang.value === "ar");
     <AppHeader />
     <NuxtPage />
     <AppFooter />
+    <WhatsAppIcon />
     <ScrollToTop />
-</NuxtLayout>
+  </NuxtLayout>
 </template>
 
 <style scoped>

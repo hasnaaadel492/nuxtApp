@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
 
-const phoneNumber = localStorage.getItem("MainPhone");
-localStorage.setItem("lang", "en");
+const phoneNumber = useCookie("MainPhone").value;
+const lang = useCookie("lang");
+
 const message =
-  localStorage.getItem("lang") === "en"
-    ? "Hello! I need help."
-    : " مرحبًا! أحتاج مساعدة.";
+  lang.value === "en" ? "Hello! I need help." : " مرحبًا! أحتاج مساعدة.";
 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
   message
 )} `;

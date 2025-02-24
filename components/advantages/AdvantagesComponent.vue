@@ -36,33 +36,34 @@ const fetchAdvantages = async () => {
   }
 };
 
-// Update max height for cards
+// Update max card height
 const updateMaxHeight = () => {
   nextTick(() => {
     const heights = cardRefs.value.map((el) => el?.offsetHeight || 0);
     maxHeight.value = Math.max(...heights);
-
     cardRefs.value.forEach((el) => {
       if (el) el.style.height = `${maxHeight.value}px`;
     });
   });
 };
 
-const handleResize = () => {
-  updateMaxHeight();
-};
+// Handle window resize
+const handleResize = () => updateMaxHeight();
 
 onMounted(() => {
-  fetchAdvantages();
   window.addEventListener("resize", handleResize);
+  fetchAdvantages();
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", handleResize);
 });
 
-// Watch advantages update
-watch(advantages, updateMaxHeight, { deep: true });
+// Automatically update cardRefs array when advantages change
+watchEffect(() => {
+  cardRefs.value = new Array(advantages.value.length).fill(null);
+  updateMaxHeight();
+});
 </script>
 
 <template>
@@ -79,14 +80,12 @@ watch(advantages, updateMaxHeight, { deep: true });
     <VContainer>
       <VRow class="cards">
         <VCol
+          v-for="(card, index) in advantages"
+          :key="index"
           cols="12"
           md="4"
           sm="6"
-          v-for="(card, index) in advantages"
-          :key="index"
-          style="padding-top: 0; padding-inline-end: 0"
-          v-bind="aosAttributes"
-          :ref="(el) => (cardRefs.value[index] = el)"
+          ref="cardRefs"
         >
           <div class="card" style="flex-direction: column">
             <div class="iconCircle">

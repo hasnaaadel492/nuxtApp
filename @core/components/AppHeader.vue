@@ -206,8 +206,10 @@ const isScrolled = ref<boolean>(false);
 const auth = {
   isAuthenticated: false,
 };
+const accessToken = useCookie("accessToken");
+
 const isLoggedIn = computed(
-  () => Boolean(localStorage.getItem("accessToken")) || auth.isAuthenticated
+  () => Boolean(accessToken.value) || auth.isAuthenticated
 );
 
 // Methods

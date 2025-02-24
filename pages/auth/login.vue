@@ -32,18 +32,30 @@ const login = async () => {
         const { $api } = useNuxtApp();
         const res = await $api("/tenant-owner/login", {
           method: "POST",
-          body: {
+          body: JSON.stringify({
             email: email.value,
             password: password.value,
-          },
+          }),
         });
 
         const token = res.body.accessToken;
         const userData = res.body.user;
 
-        // Store token in localStorage for persistence across sessions
-        localStorage.setItem("accessToken", JSON.stringify(token));
-        localStorage.setItem("userData", JSON.stringify(userData));
+        // ✅ Use useCookie() instead of localStorage
+        const accessToken = useCookie("accessToken", {
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+          secure: true, // Secure cookie (HTTPS only)
+          sameSite: "strict", // Protect against CSRF
+        });
+
+        const userCookie = useCookie("userData", {
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+          secure: true,
+          sameSite: "strict",
+        });
+
+        accessToken.value = token;
+        userCookie.value = userData;
 
         auth.login(userData, token);
         await auth.profile(); // Fetch user profile

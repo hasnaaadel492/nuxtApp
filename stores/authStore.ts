@@ -1,13 +1,15 @@
 import { defineStore } from "pinia";
-import { useNuxtApp } from "#app";
+import { useNuxtApp, useCookie } from "#app";
 
 export const useAuthStore = defineStore("authStore", {
   state: () => ({
-    userProfile: JSON.parse(localStorage.getItem("userData") || "null"),
+    userProfile: useCookie("userData").value
+      ? JSON.parse(useCookie("userData").value)
+      : null,
     storeProfile: null,
-    accessToken: localStorage.getItem("accessToken") || null,
+    accessToken: useCookie("accessToken").value || null,
     subscription: null,
-    isAuthenticated: !!localStorage.getItem("accessToken"),
+    isAuthenticated: !!useCookie("accessToken").value,
   }),
 
   actions: {
@@ -23,16 +25,18 @@ export const useAuthStore = defineStore("authStore", {
       this.accessToken = token;
       this.userProfile = profile;
       this.isAuthenticated = true;
-      localStorage.setItem("accessToken", token);
-      localStorage.setItem("userData", JSON.stringify(profile));
+
+      useCookie("accessToken").value = token;
+      useCookie("userData").value = JSON.stringify(profile);
     },
 
     clearAuth() {
       this.accessToken = null;
       this.userProfile = null;
       this.isAuthenticated = false;
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("userData");
+
+      useCookie("accessToken").value = null;
+      useCookie("userData").value = null;
     },
 
     async fetchProfile() {
@@ -40,7 +44,8 @@ export const useAuthStore = defineStore("authStore", {
         const { $api } = useNuxtApp();
         const response = await $api("/tenant-owner/profile");
         this.userProfile = response.body?.tenant_owner || null;
-        localStorage.setItem("userData", JSON.stringify(this.userProfile));
+
+        useCookie("userData").value = JSON.stringify(this.userProfile);
       } catch (error) {
         return Promise.reject("خطأ في جلب الملف الشخصي");
       }
@@ -51,9 +56,10 @@ export const useAuthStore = defineStore("authStore", {
         const { $api } = useNuxtApp();
         const response = await $api("/tenant-owner/subscription");
         this.subscription = response.body?.subscription || null;
+
         if (this.userProfile) {
           this.userProfile.is_expired = this.subscription?.is_expired || false;
-          localStorage.setItem("userData", JSON.stringify(this.userProfile));
+          useCookie("userData").value = JSON.stringify(this.userProfile);
         }
       } catch (error) {
         return Promise.reject("خطأ في جلب بيانات الاشتراك");

@@ -39,16 +39,22 @@ export const registerStore = defineStore("registerStore", {
 
     async checkValidation() {
       try {
-        await axios.post("/tenant-owner/validate_register_tenant", {
-          tenant_owner: this.tenant_owner,
-          tenant: {
-            ...this.tenant,
-            confirm_password: this.tenant.password,
-          },
-          subscription: this.subscription,
-          password: this.tenant.password,
-          password_confirmation: this.tenant.password_confirmation,
-        });
+
+        const res = await $api("/tenant-owner/validate_register_tenant", {
+          method: "POST",
+          body: JSON.stringify({
+            tenant_owner: this.tenant_owner,
+            tenant: {
+              ...this.tenant,
+              confirm_password: this.tenant.password,
+            },
+            subscription: this.subscription,
+            password: this.tenant.password,
+            password_confirmation: this.tenant.password_confirmation,
+          });
+          }),
+
+      
       } catch (error) {
         // notify(error.response?.data?.message, error.response?.data?.status);
       }

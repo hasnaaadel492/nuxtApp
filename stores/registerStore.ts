@@ -1,6 +1,6 @@
-// import notify from "@/@core/plugins/toast";
 import { defineStore } from "pinia";
-import { useAuthStore } from "@/stores/authStore"; // Keep this import
+import { useAuthStore } from "@/stores/authStore";
+import { useCookie } from "#app";
 
 export const registerStore = defineStore("registerStore", {
   state: () => ({
@@ -21,10 +21,7 @@ export const registerStore = defineStore("registerStore", {
       password_confirmation: "",
     },
     subscription: {
-      package_id:
-        typeof window !== "undefined"
-          ? sessionStorage.getItem("packageId")
-          : null,
+      package_id: useCookie("packageId").value || null, // ✅ Use cookies instead of sessionStorage
     },
     package: {},
   }),
@@ -32,14 +29,11 @@ export const registerStore = defineStore("registerStore", {
   actions: {
     setPackageId(packageId: any) {
       this.subscription.package_id = packageId;
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("packageId", packageId);
-      }
+      useCookie("packageId").value = packageId; // ✅ Store package ID in cookies
     },
 
     async checkValidation() {
       try {
-
         const res = await $api("/tenant-owner/validate_register_tenant", {
           method: "POST",
           body: JSON.stringify({
@@ -49,14 +43,10 @@ export const registerStore = defineStore("registerStore", {
               confirm_password: this.tenant.password,
             },
             subscription: this.subscription,
-            password: this.tenant.password,
-            password_confirmation: this.tenant.password_confirmation,
-          });
           }),
-
-      
+        });
       } catch (error) {
-        // notify(error.response?.data?.message, error.response?.data?.status);
+        console.error("Validation error:", error.response?.data?.message);
       }
     },
 
@@ -76,10 +66,10 @@ export const registerStore = defineStore("registerStore", {
         const token = res.data.body.accessToken;
         const userData = res.data.body.tenant_owner;
 
-        // ✅ Use useCookie() for better security and persistence
+        // ✅ Use cookies for authentication
         const accessToken = useCookie("accessToken", {
           maxAge: 60 * 60 * 24 * 7, // 7 days
-          secure: true, // Secure cookie (HTTPS only)
+          secure: true,
           sameSite: "strict",
         });
 
@@ -95,14 +85,13 @@ export const registerStore = defineStore("registerStore", {
 
         // ✅ Use auth store to manage login
         const auth = useAuthStore();
-        auth.login(res.data.body.userProfile, token);
-        await auth.profile(); // Ensure profile is fetched before continuing
+        auth.login(userData, token);
+        await auth.fetchProfile(); // Fetch profile data after login
 
         // ✅ Redirect after successful registration
-        navigateTo("/dashboard"); // Change to your desired route
+        navigateTo("/dashboard"); // Adjust route as needed
       } catch (error) {
         console.error("Registration failed:", error.response?.data?.message);
-        // Optionally show a notification here
       }
     },
   },

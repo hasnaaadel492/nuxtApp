@@ -20,7 +20,7 @@ export default defineNuxtPlugin(() => {
       "Accept-Language": lang.value || "ar",
       "X-Authorization":
         config.public.VITE_X_AUTHORIZATION ||
-        "UecYq9HzazyIjQ116v8E82VRLxotWPKiCm10gmH2kGF55EMN1TiBK5AhNq7rAa9k",
+        "0kbnSUh2SjEShddBbpzyG0htrFXDFLuH8e5WhgvjER9UE6XZdUuDGXigBFSDe789",
     };
 
     if (accessToken.value) {
@@ -34,6 +34,7 @@ export default defineNuxtPlugin(() => {
           ...headers,
           ...options.headers,
         },
+        credentials: "include", // ✅ Ensures cookies (CSRF + session) are sent
       });
 
       if (!response.ok) {

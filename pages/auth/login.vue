@@ -24,32 +24,43 @@ const errors = ref<Record<string, string | undefined>>({
   message: undefined,
 });
 const refVForm = ref<VForm>();
+const getCsrfToken = async () => {
+  await fetch("https://api-dev.7lerp.com/central/api/sanctum/csrf-cookie", {
+    credentials: "include", // ✅ Ensures Laravel sets the CSRF cookie
+  });
+};
 // Login service
 const login = async () => {
   refVForm.value?.validate().then(async ({ valid: isValid }) => {
     if (isValid) {
       try {
         const { $api } = useNuxtApp();
+
+        // ✅ First, fetch the CSRF token
+        await getCsrfToken();
+
+        // ✅ Then make the login request
         const res = await $api("/tenant-owner/login", {
           method: "POST",
           body: JSON.stringify({
             email: email.value,
             password: password.value,
           }),
+          credentials: "include", // ✅ Send cookies with request
         });
 
         const token = res.body.accessToken;
         const userData = res.body.user;
 
-        // ✅ Use useCookie() instead of localStorage
+        // ✅ Store in cookies instead of localStorage
         const accessToken = useCookie("accessToken", {
-          maxAge: 60 * 60 * 24 * 7, // 7 days
-          secure: true, // Secure cookie (HTTPS only)
-          sameSite: "strict", // Protect against CSRF
+          maxAge: 60 * 60 * 24 * 7,
+          secure: true,
+          sameSite: "strict",
         });
 
         const userCookie = useCookie("userData", {
-          maxAge: 60 * 60 * 24 * 7, // 7 days
+          maxAge: 60 * 60 * 24 * 7,
           secure: true,
           sameSite: "strict",
         });
@@ -58,7 +69,7 @@ const login = async () => {
         userCookie.value = userData;
 
         auth.login(userData, token);
-        await auth.profile(); // Fetch user profile
+        await auth.profile();
 
         router.replace(route.query.to ? String(route.query.to) : "/home");
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
 import { useNuxtApp, useFetch } from "#app";
-
+import AppHeading from "~/@core/components/AppHeading.vue";
 // Data
 const advantages = ref<any[]>([]);
 const totalAdvantages = ref<number>(0);

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import DeviceCard from "@/modules/devices/components/DeviceCard.vue";
-import axios from "@axios";
+import DeviceCard from "@/components/devices/DeviceCard.vue";
 import { onMounted, ref } from "vue";
 
 // Data

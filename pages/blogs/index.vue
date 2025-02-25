@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import AppHeading from "~/@core/components/AppHeading.vue";
+
 const subtitle = "blog";
 const mainPargraph = "mainPargraph";
 

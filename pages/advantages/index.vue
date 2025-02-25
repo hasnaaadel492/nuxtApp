@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AdvantagesComponent from "~/components/advantages/AdvantagesComponent";
+import AdvantagesComponent from "@/components/advantages/AdvantagesComponent.vue";
 onMounted(() => {
   const useLang = () => useState("lang", () => "ar"); // Default language
   const lang = useLang().value;

@@ -1,62 +1,72 @@
 <script setup lang="ts">
-import notify from '@/@core/plugins/toast'
-import axios from '@axios'
-import { confirmedValidator, passwordValidator } from '@validators'
-import { VForm } from 'vuetify/components/VForm'
+import notify from "@/@core/plugins/toast";
+import axios from "@axios";
+import { confirmedValidator, passwordValidator } from "@validators";
+import { VForm } from "vuetify/components/VForm";
 
-const isYourPasswordVisible = ref(false)
-const isConfirmPasswordVisible = ref(false)
-const newPassword = ref('')
-const confirmNewPassword = ref('')
-const { t } = useI18n()
-const router = useRouter()
-const refVForm = ref<VForm>()
+const isYourPasswordVisible = ref(false);
+const isConfirmPasswordVisible = ref(false);
+const newPassword = ref("");
+const confirmNewPassword = ref("");
+const { t } = useI18n();
+const router = useRouter();
+const refVForm = ref<VForm>();
+const lang = useCookie("lang");
 
 const resetPassword = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
-      const email = sessionStorage.getItem('email')
-      const sessionToken = sessionStorage.getItem('sessionToken')
+      const email = sessionStorage.getItem("email");
+      const sessionToken = sessionStorage.getItem("sessionToken");
 
       axios
-        .post('/tenant-owner/reset-password', {
+        .post("/tenant-owner/reset-password", {
           email: email,
           token: sessionToken,
           password: newPassword.value,
           password_confirmation: confirmNewPassword.value,
         })
         .then((res) => {
-          notify(res.data.message, res.data.status)
+          notify(res.data.message, res.data.status);
           setTimeout(() => {
-            router.push('/auth/login')
-          }, 1000)
+            router.push("/auth/login");
+          }, 1000);
         })
         .catch((error) => {
-          notify(error.response.data.message, error.response.data.status)
-        })
+          notify(error.response.data.message, error.response.data.status);
+        });
     }
-  })
-}
+  });
+};
 
-const symbolStyle = computed(() => {
-  return lang === 'en' ? { transform: 'rotate(180deg)' } : {}
-})
+watchEffect(() => {
+  const lang = useCookie("lang"); // Ensure lang is properly defined
 
-const lang = localStorage.getItem('lang')
+  if (lang.value === "en") {
+    nextTick(() => {
+      const authComponent = document.querySelector(".auth");
 
-onMounted(() => {
-  if (lang === 'en') {
-    const selectors = ['.hero-circel1', '.hero-circel2']
+      if (!authComponent) {
+        console.warn("`.auth` component not found in the DOM.");
+        return;
+      }
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(`.auth ${selector}`)
+      const selectors = [".hero-circel1", ".hero-circel2"];
 
-      elements.forEach((element) => {
-        element.style.transform = 'rotate(180deg)'
-      })
-    })
+      selectors.forEach((selector) => {
+        const elements = authComponent.querySelectorAll(selector);
+
+        if (elements.length === 0) {
+          console.warn(`No elements found for selector: ${selector}`);
+        } else {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        }
+      });
+    });
   }
-})
+});
 </script>
 
 <template>
@@ -77,12 +87,12 @@ onMounted(() => {
       >
         <VCard>
           <div class="forget-header">
-            <h4>🔐 {{ $t('recover_password') }}</h4>
-            <P>{{ $t('password_instructions') }}</P>
+            <h4>🔐 {{ $t("recover_password") }}</h4>
+            <P>{{ $t("password_instructions") }}</P>
           </div>
           <VForm @submit.prevent="resetPassword" ref="refVForm">
             <div class="field-container password-container">
-              <label>{{ t('password') }}</label>
+              <label>{{ t("password") }}</label>
 
               <VTextField
                 v-model="newPassword"
@@ -101,7 +111,7 @@ onMounted(() => {
             </div>
 
             <div class="field-container password-container">
-              <label>{{ t('password_confirmation') }}</label>
+              <label>{{ t("password_confirmation") }}</label>
 
               <VTextField
                 :rules="[
@@ -136,7 +146,7 @@ onMounted(() => {
 <style lang="scss">
 .auth {
   position: relative;
-  background-image: url('@/assets/images/hero1.svg') !important;
+  background-image: url("@/assets/images/hero1.svg") !important;
   background-size: contain;
   inline-size: 100%;
   padding-block-start: 200px;

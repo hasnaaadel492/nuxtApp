@@ -1,18 +1,29 @@
 <script lang="ts" setup>
-onMounted(() => {
-  const useLang = () => useState("lang", () => "ar"); // Default language
-  const lang = useLang().value;
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
+import { watchEffect, nextTick } from "vue";
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(`.termsComponent ${selector}`);
+watchEffect(() => {
+  const lang = useCookie("lang");
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+  nextTick(() => {
+    // Ensure `.termsComponent` exists before modifying its children
+    const termsComponent = document.querySelector(".termsComponent");
+
+    if (termsComponent && lang.value === "en") {
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = termsComponent.querySelectorAll(selector);
+
+        if (elements.length > 0) {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        } else {
+          console.warn(`No elements found for selector: ${selector}`);
+        }
       });
-    });
-  }
+    }
+  });
 });
 </script>
 

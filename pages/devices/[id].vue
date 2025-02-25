@@ -11,10 +11,10 @@ const mainPargraph = "mainPargraph";
 const route = useRoute();
 const phoneNumber = useCookie("MainPhone").value;
 
-const useLang = () => useState("lang", () => "ar"); // Default language
-const lang = useLang().value; // Get language state
+const lang = useCookie("lang");
+
 const message =
-  lang == "en"
+  lang.value == "en"
     ? '"Hello, I would like to purchase this device. Please provide me with details and payment method. Thanks!"'
     : "مرحبًا، أرغب في شراء هذا الجهاز. يرجى تزويدي بالتفاصيل وطريقة الدفع. شكرًا!";
 
@@ -47,28 +47,40 @@ onMounted(() => {
   fetchDevice();
 });
 
-onMounted(() => {
-  const useLang = () => useState("lang", () => "ar"); // Default language
-  const lang = useLang().value; // Get language state
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
+watchEffect(() => {
+  const lang = useCookie("lang");
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(
-        `.deviceComponent ${selector}`
-      );
+  nextTick(() => {
+    // Ensure `.deviceComponent` exists before modifying its children
+    const deviceComponent = document.querySelector(".deviceComponent");
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+    if (deviceComponent && lang.value === "en") {
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = deviceComponent.querySelectorAll(selector);
+
+        if (elements.length > 0) {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        } else {
+          console.warn(`No elements found for selector: ${selector}`);
+        }
       });
-    });
-  }
+    }
 
-  const cards = document.querySelectorAll(".blog-card");
-  cards.forEach((card, index) => {
-    setTimeout(() => {
-      card.classList.add("visible");
-    }, index * 200); // Stagger the animations
+    // Stagger animation for `.blog-card` elements
+    const cards = document.querySelectorAll(".blog-card");
+    if (cards.length > 0) {
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add("visible");
+        }, index * 200);
+      });
+    } else {
+      console.warn("No `.blog-card` elements found in the DOM.");
+    }
   });
 });
 

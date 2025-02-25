@@ -6,52 +6,63 @@ import AppHeading from "@//@core/components/AppHeading.vue";
 const subtitle = "contactUs";
 const mainPargraph = "mainPargraph";
 
-onMounted(() => {
-  const useLang = () => useState("lang", () => "ar");
-  const lang = useLang().value;
+watchEffect(() => {
+  const lang = useCookie("lang");
+
+  // Function to format date based on language preference
   const formatDate = (isoString) => {
     const date = new Date(isoString);
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return date.toLocaleString(lang == "en" ? "en-US" : "ar", options);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return date.toLocaleString(lang.value === "en" ? "en-US" : "ar", options);
   };
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(
-        `.contactUsComponent ${selector}`
-      );
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+
+  nextTick(() => {
+    // Ensure `.contactUsComponent` exists before modifying children
+    const contactUsComponent = document.querySelector(".contactUsComponent");
+
+    if (contactUsComponent) {
+      if (lang.value === "en") {
+        const selectors = [".hero-circel1", ".hero-circel2"];
+
+        selectors.forEach((selector) => {
+          const elements = contactUsComponent.querySelectorAll(selector);
+
+          if (elements.length > 0) {
+            elements.forEach((element) => {
+              element.style.transform = "rotate(180deg)";
+            });
+          } else {
+            console.warn(`No elements found for selector: ${selector}`);
+          }
+        });
+      }
+
+      // GSAP Animations (Only run if elements exist)
+      gsap.from(".hero-circel1", {
+        duration: 1.5,
+        x: -200,
+        opacity: 0,
+        ease: "power3.out",
       });
-    });
-  }
 
-  // GSAP Animation
-  gsap.from(".hero-circel1", {
-    duration: 1.5,
-    x: -200,
-    opacity: 0,
-    ease: "power3.out",
-  });
+      gsap.from(".hero-circel2", {
+        duration: 1.5,
+        x: 200,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 0.5,
+      });
 
-  gsap.from(".hero-circel2", {
-    duration: 1.5,
-    x: 200,
-    opacity: 0,
-    ease: "power3.out",
-    delay: 0.5,
-  });
-
-  gsap.from(".contact", {
-    duration: 1,
-    y: 100,
-    opacity: 0,
-    ease: "power3.out",
-    delay: 0.7,
+      gsap.from(".contact", {
+        duration: 1,
+        y: 100,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 0.7,
+      });
+    } else {
+      console.warn("`.contactUsComponent` not found in the DOM.");
+    }
   });
 });
 </script>

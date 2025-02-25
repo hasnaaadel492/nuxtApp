@@ -1,22 +1,23 @@
 <script lang="ts" setup>
 import { useAuthStore } from "~/stores/authStore";
+
+import { useCookie } from "#imports";
 import {
   emailValidator,
   englishAlphaValidator,
   requiredValidator,
 } from "@/@core/plugins/validators";
 import { VForm } from "vuetify/components/VForm";
-import MainButton from "@/@core/components/buttons/MainButton.vue";
+import MainButton from "@/@core/components/buttons/mainButton.vue";
+
 const email = ref("");
 const password = ref("");
 const isPasswordVisible = ref(false);
 
-const rememberMe = ref(false);
 const { t } = useI18n();
 const auth = useAuthStore();
 
-const useLang = () => useState("lang", () => "ar"); // Default language
-const lang = useLang().value;
+const lang = useCookie("lang");
 const route = useRoute();
 const router = useRouter();
 
@@ -24,75 +25,92 @@ const errors = ref<Record<string, string | undefined>>({
   message: undefined,
 });
 const refVForm = ref<VForm>();
-const getCsrfToken = async () => {
-  await fetch("https://api-dev.7lerp.com/central/api/sanctum/csrf-cookie", {
-    credentials: "include", // ✅ Ensures Laravel sets the CSRF cookie
-  });
-};
+
 // Login service
 const login = async () => {
-  refVForm.value?.validate().then(async ({ valid: isValid }) => {
-    if (isValid) {
-      try {
-        const { $api } = useNuxtApp();
+  const validation = await refVForm.value?.validate();
+  if (!validation?.valid) return;
 
-        // ✅ First, fetch the CSRF token
-        await getCsrfToken();
-
-        // ✅ Then make the login request
-        const res = await $api("/tenant-owner/login", {
-          method: "POST",
-          body: JSON.stringify({
-            email: email.value,
-            password: password.value,
-          }),
-          credentials: "include", // ✅ Send cookies with request
-        });
-
-        const token = res.body.accessToken;
-        const userData = res.body.user;
-
-        // ✅ Store in cookies instead of localStorage
-        const accessToken = useCookie("accessToken", {
-          maxAge: 60 * 60 * 24 * 7,
-          secure: true,
-          sameSite: "strict",
-        });
-
-        const userCookie = useCookie("userData", {
-          maxAge: 60 * 60 * 24 * 7,
-          secure: true,
-          sameSite: "strict",
-        });
-
-        accessToken.value = token;
-        userCookie.value = userData;
-
-        auth.login(userData, token);
-        await auth.profile();
-
-        router.replace(route.query.to ? String(route.query.to) : "/home");
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 50);
-      } catch (error) {
-        errors.value.message = "login_cardinals";
-        password.value = "";
+  try {
+    const { data, error } = await useFetch(
+      "https://api-dev.7lerp.com/central/api/tenant-owner/login",
+      {
+        method: "POST",
+        body: {
+          email: email.value,
+          password: password.value,
+        },
+        headers: {
+          "X-Authorization":
+            "UecYq9HzazyIjQ116v8E82VRLxotWPKiCm10gmH2kGF55EMN1TiBK5AhNq7rAa9k",
+          "Content-Type": "application/json",
+        },
       }
-    }
-  });
+    );
+
+    if (error.value) throw new Error(error.value?.message || "Login failed");
+
+    const token = data.value?.accessToken;
+    const userData = data.value?.user;
+    if (!token) throw new Error("Invalid response from server");
+
+    // Store token in cookies
+    const accessToken = useCookie("accessToken", {
+      maxAge: 60 * 60 * 24 * 7,
+      secure: true,
+      sameSite: "strict",
+    });
+    const userCookie = useCookie("userData", {
+      maxAge: 60 * 60 * 24 * 7,
+      secure: true,
+      sameSite: "strict",
+    });
+
+    accessToken.value = token;
+    userCookie.value = userData;
+
+    // Save token in localStorage
+    localStorage.setItem("token", token);
+
+    auth.login(userData, token);
+    await auth.profile();
+
+    router.replace(route.query.to ? String(route.query.to) : "/home");
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 50);
+  } catch (error) {
+    console.error("Login error:", error.message);
+    errors.value.message = "login_cardinals";
+    password.value = "";
+  }
 };
 
-onMounted(() => {
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
+watchEffect(() => {
+  const lang = useCookie("lang"); // Ensure lang is properly defined
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(`.auth ${selector}`);
+  if (lang.value === "en") {
+    nextTick(() => {
+      const authComponent = document.querySelector(".auth");
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+      if (!authComponent) {
+        console.warn("`.auth` component not found in the DOM.");
+        return;
+      }
+
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = authComponent.querySelectorAll(selector);
+
+        if (elements.length === 0) {
+          console.warn(`No elements found for selector: ${selector}`);
+        } else {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        }
       });
     });
   }

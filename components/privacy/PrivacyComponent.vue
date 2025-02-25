@@ -4,8 +4,7 @@ const mainPargraph = "mainPargraph";
 
 import AppHeading from "~/@core/components/AppHeading.vue";
 
-const useLang = () => useState("lang", () => "ar"); // Default language
-const lang = useLang().value; // Get language state
+const lang = useCookie("lang");
 
 const privacy = ref({});
 

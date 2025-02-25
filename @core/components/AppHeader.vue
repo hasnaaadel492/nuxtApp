@@ -7,53 +7,53 @@
         <div class="list">
           <ul class="list hidden_list">
             <!-- <li>
-              <router-link to="/features" @click="hideSideNav">{{
+              <NuxtLink to="/features" @click="hideSideNav">{{
                 $t('features')
-              }}</router-link>
+              }}</NuxtLink>
             </li>
             <li>
-              <router-link to="/system-terminologys" @click="hideSideNav">
-                {{ $t('systemTerminologys') }}</router-link
+              <NuxtLink to="/system-terminologys" @click="hideSideNav">
+                {{ $t('systemTerminologys') }}</NuxtLink
               >
             </li> -->
             <li>
-              <router-link to="/advantages" @click="hideSideNav">{{
+              <NuxtLink to="/advantages" @click="hideSideNav">{{
                 $t("advantages")
-              }}</router-link>
+              }}</NuxtLink>
             </li>
 
             <li>
-              <router-link to="/packages" @click="hideSideNav">{{
+              <NuxtLink to="/packages" @click="hideSideNav">{{
                 $t("packages")
-              }}</router-link>
+              }}</NuxtLink>
             </li>
 
             <li>
-              <router-link to="/applications" @click="hideSideNav">{{
+              <NuxtLink to="/applications" @click="hideSideNav">{{
                 $t("applications")
-              }}</router-link>
+              }}</NuxtLink>
             </li>
 
             <li>
-              <router-link to="/devices" @click="hideSideNav">{{
+              <NuxtLink to="/devices" @click="hideSideNav">{{
                 $t("devices")
-              }}</router-link>
+              }}</NuxtLink>
             </li>
 
             <li>
-              <router-link to="/blogs" @click="hideSideNav">
-                {{ $t("blog") }}</router-link
+              <NuxtLink to="/blogs" @click="hideSideNav">
+                {{ $t("blog") }}</NuxtLink
               >
             </li>
             <li>
-              <router-link to="/aboutUs" @click="hideSideNav">{{
+              <NuxtLink to="/aboutUs" @click="hideSideNav">{{
                 $t("about7L")
-              }}</router-link>
+              }}</NuxtLink>
             </li>
 
             <li>
-              <router-link to="/contactUs" @click="hideSideNav">
-                {{ $t("contactUs") }}</router-link
+              <NuxtLink to="/contactUs" @click="hideSideNav">
+                {{ $t("contactUs") }}</NuxtLink
               >
             </li>
           </ul>
@@ -69,10 +69,9 @@
             gap: 7px;
           "
         >
-          <!-- <NavBarI18n class="mx-1" style="color: #fff" /> -->
-          lang
+          <NavBarI18n class="mx-1" style="color: #fff" />
 
-          <router-link
+          <NuxtLink
             to="/auth/login"
             v-if="!auth.isAuthenticated"
             @click="hideSideNav"
@@ -80,9 +79,9 @@
             <button class="renewHeaderButton d-flex align-center">
               <span class="text">{{ $t("members_login") }}</span>
             </button>
-          </router-link>
+          </NuxtLink>
 
-          <router-link
+          <NuxtLink
             to="/packages"
             v-if="!auth.isAuthenticated"
             @click="hideSideNav"
@@ -90,7 +89,7 @@
             <MainButton
               :content="buttoncontent"
               class="headerButton d-flex align-center"
-          /></router-link>
+          /></NuxtLink>
         </div>
       </div>
     </transition>
@@ -100,9 +99,9 @@
     >
       <!-- shown navbar -->
       <div class="contain">
-        <router-link to="/" class="d-flex align-center gap-x-2">
+        <NuxtLink to="/" class="d-flex align-center gap-x-2">
           <img src="@/assets/images/newLogo2.png" alt="logo" />
-        </router-link>
+        </NuxtLink>
 
         <nav>
           <ul
@@ -110,39 +109,37 @@
             style="margin-bottom: 0 !important; list-style: none"
           >
             <!-- <li>
-              <router-link to="/features">{{ $t('features') }}</router-link>
+              <NuxtLink to="/features">{{ $t('features') }}</NuxtLink>
             </li>
             <li>
-              <router-link to="/system-terminologys">
-                {{ $t('systemTerminologys') }}</router-link
+              <NuxtLink to="/system-terminologys">
+                {{ $t('systemTerminologys') }}</NuxtLink
               >
             </li> -->
             <li>
-              <router-link to="/advantages">{{ $t("advantages") }}</router-link>
+              <NuxtLink to="/advantages">{{ $t("advantages") }}</NuxtLink>
             </li>
 
             <li>
-              <router-link to="/packages">{{ $t("packages") }}</router-link>
+              <NuxtLink to="/packages">{{ $t("packages") }}</NuxtLink>
             </li>
             <li>
-              <router-link to="/applications">{{
-                $t("applications")
-              }}</router-link>
+              <NuxtLink to="/applications">{{ $t("applications") }}</NuxtLink>
             </li>
 
             <li>
-              <router-link to="/devices">{{ $t("devices") }}</router-link>
+              <NuxtLink to="/devices">{{ $t("devices") }}</NuxtLink>
             </li>
 
             <li>
-              <router-link to="/blogs">{{ $t("blog") }}</router-link>
+              <NuxtLink to="/blogs">{{ $t("blog") }}</NuxtLink>
             </li>
             <li>
-              <router-link to="/aboutUs">{{ $t("about7L") }}</router-link>
+              <NuxtLink to="/aboutUs">{{ $t("about7L") }}</NuxtLink>
             </li>
 
             <li>
-              <router-link to="/contactUs"> {{ $t("contactUs") }}</router-link>
+              <NuxtLink to="/contactUs"> {{ $t("contactUs") }}</NuxtLink>
             </li>
           </ul>
         </nav>
@@ -156,10 +153,9 @@
           "
         >
           <div class="buttonsNav" style="display: flex; gap: 10px">
-            <!-- <NavBarI18n class="mx-1" /> -->
-            lang
+            <NavBarI18n class="mx-1" />
 
-            <router-link
+            <NuxtLink
               to="/auth/login"
               v-if="!auth.isAuthenticated"
               @click="hideSideNav"
@@ -167,9 +163,9 @@
               <button class="renewHeaderButton d-flex align-center">
                 <span class="text">{{ $t("members_login") }}</span>
               </button>
-            </router-link>
+            </NuxtLink>
 
-            <router-link
+            <NuxtLink
               to="/packages"
               v-if="!auth.isAuthenticated"
               @click="hideSideNav"
@@ -177,7 +173,7 @@
               <MainButton
                 :content="buttoncontent"
                 class="headerButton d-flex align-center"
-            /></router-link>
+            /></NuxtLink>
           </div>
           <!-- <AppUserHeader v-if="token" style="margin-top: 6px" /> -->
           <AppUserHeader v-if="auth.isAuthenticated" style="margin-top: 6px" />
@@ -192,7 +188,7 @@
 </template>
 
 <script lang="ts" setup>
-// import NavBarI18n from '@/layouts/components/NavBarI18n.vue'
+import NavBarI18n from "@/@core/components/NavBarI18n.vue";
 // import { authStore } from '../../pages/auth/store/authStore'
 import { ref } from "vue";
 
@@ -297,7 +293,7 @@ onUnmounted(() => {
   }
 }
 
-router-link {
+NuxtLink {
   cursor: pointer;
   text-transform: uppercase;
   transition: all 0.3s linear;
@@ -322,7 +318,7 @@ router-link {
     }
   }
 
-  .router-link-active {
+  .NuxtLink-active {
     background: none;
     color: #157d99 !important;
     font-family: Cairo-Bold;
@@ -522,7 +518,7 @@ nav {
     }
   }
 
-  .router-link-active {
+  .NuxtLink-active {
     background: none;
     color: #157d99 !important;
     font-family: Cairo-Bold;

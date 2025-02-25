@@ -2,21 +2,29 @@
 const subtitle = "devices";
 const mainPargraph = "mainPargraph";
 
-onMounted(() => {
-  const lang = localStorage.getItem("lang");
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
+watchEffect(() => {
+  const lang = useCookie("lang");
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(
-        `.devicesComponent ${selector}`
-      );
+  nextTick(() => {
+    // Ensure `.devicesComponent` exists before modifying its children
+    const devicesComponent = document.querySelector(".devicesComponent");
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+    if (devicesComponent && lang.value === "en") {
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = devicesComponent.querySelectorAll(selector);
+
+        if (elements.length > 0) {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        } else {
+          console.warn(`No elements found for selector: ${selector}`);
+        }
       });
-    });
-  }
+    }
+  });
 });
 </script>
 

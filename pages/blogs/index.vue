@@ -26,8 +26,8 @@ const fetchBlogs = async () => {
   }
 };
 
-const useLang = () => useState("lang", () => "ar");
-const lang = useLang().value;
+const lang = useCookie("lang");
+
 const formatDate = (isoString) => {
   const date = new Date(isoString);
   const options = {
@@ -35,25 +35,39 @@ const formatDate = (isoString) => {
     month: "long",
     day: "numeric",
   };
-  return date.toLocaleString(lang == "en" ? "en-US" : "ar", options);
+  return date.toLocaleString(lang.value == "en" ? "en-US" : "ar", options);
 };
 
 watchEffect(fetchBlogs);
 
 const symbolStyle = computed(() => {
-  return lang === "en" ? { transform: "rotate(180deg)" } : {};
+  return lang.value === "en" ? { transform: "rotate(180deg)" } : {};
 });
 
-onMounted(() => {
-  const lang = localStorage.getItem("lang");
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
+watchEffect(() => {
+  const lang = useCookie("lang");
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(`.blogsComponent ${selector}`);
+  if (lang.value === "en") {
+    nextTick(() => {
+      const blogsComponent = document.querySelector(".blogsComponent");
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+      if (!blogsComponent) {
+        console.warn("`.blogsComponent` not found in the DOM.");
+        return;
+      }
+
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = blogsComponent.querySelectorAll(selector);
+
+        if (elements.length === 0) {
+          console.warn(`No elements found for selector: ${selector}`);
+        } else {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        }
       });
     });
   }

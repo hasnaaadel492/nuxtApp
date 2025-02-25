@@ -25,11 +25,9 @@ const fetchApplication = async () => {
 
 watchEffect(() => {
   fetchApplication();
-});
 
-onMounted(() => {
-  const lang = localStorage.getItem("lang");
-  if (lang === "en") {
+  const lang = useCookie("lang");
+  if (lang.value == "en") {
     const selectors = [".hero-circel1", ".hero-circel2"];
 
     selectors.forEach((selector) => {

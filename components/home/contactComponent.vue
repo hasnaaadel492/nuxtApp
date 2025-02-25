@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import notify from "@/@core/plugins/toast";
+// import notify from "@/@core/plugins/toast";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 const subtitle = "contactUs";
 const mainPargraph = "mainPargraph";
@@ -95,13 +95,13 @@ const sendMessage = async () => {
       // notify(error.response.data.message, error.response.data.status, '')
     }
   } else {
-    notify(
-      useCookie("lang").value === "ar"
-        ? "يجب عليك إدخال البيانات لجميع الحقول ."
-        : "Please fill in all required fields.",
-      false,
-      ""
-    );
+    // notify(
+    //   useCookie("lang").value === "ar"
+    //     ? "يجب عليك إدخال البيانات لجميع الحقول ."
+    //     : "Please fill in all required fields.",
+    //   false,
+    //   ""
+    // );
   }
 };
 

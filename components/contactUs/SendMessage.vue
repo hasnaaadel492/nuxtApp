@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import notify from "@/@core/plugins/toast";
+// import notify from "@/@core/plugins/toast";
 import { emailValidator, requiredValidator } from "@/@core/plugins/validators";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 import { ref } from "vue";
@@ -8,8 +8,8 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 const showPhoneInput = ref(true);
 const phoneNumberValue = ref("");
-const useLang = () => useState("lang", () => "ar");
-const lang = useLang().value;
+const lang = useCookie("lang");
+
 const formatDate = (isoString) => {
   const date = new Date(isoString);
   const options = {
@@ -17,7 +17,7 @@ const formatDate = (isoString) => {
     month: "long",
     day: "numeric",
   };
-  return date.toLocaleString(lang == "en" ? "en-US" : "ar", options);
+  return date.toLocaleString(lang.value == "en" ? "en-US" : "ar", options);
 };
 const name = ref("");
 const phoneNumber = ref(null);
@@ -41,7 +41,7 @@ const sendMessage = () => {
         },
       })
         .then((res) => {
-          notify(res.message, res.status, "");
+          // notify(res.message, res.status, "");
           showPhoneInput.value = false;
           setTimeout(() => {
             showPhoneInput.value = true;
@@ -57,7 +57,7 @@ const sendMessage = () => {
           results.value = {};
         })
         .catch((error) => {
-          notify(error?.data?.message || "An error occurred", false, "");
+          // notify(error?.data?.message || "An error occurred", false, "");
         });
     }
   });

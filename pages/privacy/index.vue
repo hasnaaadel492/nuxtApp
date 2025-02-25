@@ -1,20 +1,27 @@
 <script lang="ts" setup>
-onMounted(() => {
-  const useLang = () => useState("lang", () => "ar"); // Default language
-  const lang = useLang().value;
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
+watchEffect(() => {
+  const lang = useCookie("lang");
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(
-        `.privacyComponent ${selector}`
-      );
+  nextTick(() => {
+    // Ensure `.privacyComponent` exists before modifying its children
+    const privacyComponent = document.querySelector(".privacyComponent");
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+    if (privacyComponent && lang.value === "en") {
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = privacyComponent.querySelectorAll(selector);
+
+        if (elements.length > 0) {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        } else {
+          console.warn(`No elements found for selector: ${selector}`);
+        }
       });
-    });
-  }
+    }
+  });
 });
 </script>
 

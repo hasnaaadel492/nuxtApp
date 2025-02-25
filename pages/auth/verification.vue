@@ -75,21 +75,35 @@ const resendCode = async () => {
   }
 };
 
-const useLang = () => useState("lang", () => "ar"); // Default language
-const lang = useLang().value;
-onMounted(() => {
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
+const lang = useCookie("lang");
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(`.auth ${selector}`);
+watchEffect(() => {
+  const lang = useCookie("lang"); // Ensure lang is properly defined
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+  if (lang.value === "en") {
+    nextTick(() => {
+      const authComponent = document.querySelector(".auth");
+
+      if (!authComponent) {
+        console.warn("`.auth` component not found in the DOM.");
+        return;
+      }
+
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = authComponent.querySelectorAll(selector);
+
+        if (elements.length === 0) {
+          console.warn(`No elements found for selector: ${selector}`);
+        } else {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        }
       });
     });
   }
-
   // Initialize countdown based on saved end time or start a new countdown
   let savedEndTime = sessionStorage.getItem("countdownEndTime");
 

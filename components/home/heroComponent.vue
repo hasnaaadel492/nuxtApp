@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { watchEffect, nextTick } from "vue";
+
 const buttonContent = "joinUs";
 const props = withDefaults(defineProps<Props>(), {
   header: () => ({
@@ -18,19 +20,33 @@ interface Props {
   header?: header;
 }
 
-onMounted(() => {
+watchEffect(() => {
   const lang = useCookie("lang");
-  if (lang.value === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(`.HeroComponent ${selector}`);
+  nextTick(() => {
+    if (lang.value === "en") {
+      const heroComponent = document.querySelector(".HeroComponent");
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+      if (!heroComponent) {
+        console.warn("HeroComponent not found in the DOM");
+        return;
+      }
+
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = heroComponent.querySelectorAll(selector);
+
+        if (elements.length > 0) {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        } else {
+          console.warn(`No elements found for selector: ${selector}`);
+        }
       });
-    });
-  }
+    }
+  });
 });
 </script>
 

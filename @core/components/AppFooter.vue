@@ -180,23 +180,36 @@ const getContacts = async () => {
     console.error("Error fetching company info:", error);
   }
 };
-watchEffect(getContacts);
 
-onMounted(() => {
-  const lang = localStorage.getItem("lang");
-  if (lang === "en") {
-    const selectors = [".arrowIcon"];
+watchEffect(() => {
+  getContacts();
+  const lang = useCookie("lang");
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(`.headers-list ${selector}`);
+  if (lang.value === "en") {
+    nextTick(() => {
+      const headerList = document.querySelector(".headers-list");
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+      if (!headerList) {
+        console.warn("`.headers-list` not found in the DOM.");
+        return;
+      }
+
+      const selectors = [".arrowIcon"];
+
+      selectors.forEach((selector) => {
+        const elements = headerList.querySelectorAll(selector);
+
+        if (elements.length === 0) {
+          console.warn(`No elements found for selector: ${selector}`);
+        } else {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        }
       });
     });
   }
 });
-
 const headers = [
   { title: "home", pathLink: "/home" },
 

@@ -7,7 +7,7 @@ import {
   requiredValidator,
 } from "@/@core/plugins/validators";
 import { VForm } from "vuetify/components/VForm";
-import MainButton from "@/@core/components/buttons/MainButton.vue";
+import MainButton from "@/@core/components/buttons/mainButton.vue";
 
 const email = ref("");
 const { t } = useI18n();
@@ -33,21 +33,36 @@ const forgetPassword = async () => {
   });
 };
 
-const useLang = () => useState("lang", () => "ar"); // Default language
-const lang = useLang().value;
+const lang = useCookie("lang");
+
 const symbolStyle = computed(() => {
-  return lang === "en" ? { transform: "rotate(180deg)" } : {};
+  return lang.value == "en" ? { transform: "rotate(180deg)" } : {};
 });
 
-onMounted(() => {
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
+watchEffect(() => {
+  const lang = useCookie("lang");
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(`.auth ${selector}`);
+  if (lang.value === "en") {
+    nextTick(() => {
+      const authComponent = document.querySelector(".auth");
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+      if (!authComponent) {
+        console.warn("`.auth` component not found in the DOM.");
+        return;
+      }
+
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = authComponent.querySelectorAll(selector);
+
+        if (elements.length === 0) {
+          console.warn(`No elements found for selector: ${selector}`);
+        } else {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        }
       });
     });
   }

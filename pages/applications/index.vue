@@ -2,19 +2,26 @@
 import AppHeading from "@/@core/components/AppHeading.vue";
 const subtitle = "applications";
 const mainPargraph = "mainPargraph";
-onMounted(() => {
-  const useLang = () => useState("lang", () => "ar"); // Default language
-  const lang = useLang().value;
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
+watchEffect(() => {
+  const lang = useCookie("lang");
+  console.log(lang.value);
 
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(
-        `.applicationsComponent ${selector}`
-      );
+  if (lang.value === "en") {
+    nextTick(() => {
+      const selectors = [".hero-circel1", ".hero-circel2"];
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+      selectors.forEach((selector) => {
+        const elements = document.querySelectorAll(
+          `.applicationsComponent ${selector}`
+        );
+
+        if (elements.length > 0) {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        } else {
+          console.warn(`No elements found for selector: ${selector}`);
+        }
       });
     });
   }

@@ -5,11 +5,8 @@ import AppHeader from "~/@core/components/AppHeader.vue";
 import ScrollToTop from "~/@core/components/ScrollToTop.vue";
 import WhatsAppIcon from "@/@core/components/WhatsAppIcon.vue";
 
-const useLang = () => useState("lang", () => "ar"); // Default language
-const lang = useLang();
-
-// ✅ Dynamically set direction
-const isAppRtl = computed(() => lang.value === "ar");
+const lang = useCookie("lang");
+const isAppRtl = useCookie("isAppRtl");
 </script>
 
 <template>

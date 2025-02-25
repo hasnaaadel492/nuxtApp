@@ -1,19 +1,31 @@
 <script lang="ts" setup>
 import AdvantagesComponent from "@/components/advantages/AdvantagesComponent.vue";
-onMounted(() => {
-  const useLang = () => useState("lang", () => "ar"); // Default language
-  const lang = useLang().value;
+watchEffect(() => {
+  const lang = useCookie("lang");
 
-  if (lang === "en") {
-    const selectors = [".hero-circel1", ".hero-circel2"];
-
-    selectors.forEach((selector) => {
-      const elements = document.querySelectorAll(
-        `.advantagesComponent ${selector}`
+  if (lang.value === "en") {
+    nextTick(() => {
+      const advantagesComponent = document.querySelector(
+        ".advantagesComponent"
       );
 
-      elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+      if (!advantagesComponent) {
+        console.warn("`.advantagesComponent` not found in the DOM.");
+        return;
+      }
+
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = advantagesComponent.querySelectorAll(selector);
+
+        if (elements.length === 0) {
+          console.warn(`No elements found for selector: ${selector}`);
+        } else {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        }
       });
     });
   }

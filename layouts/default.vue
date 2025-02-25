@@ -1,9 +1,6 @@
 <script lang="ts">
-const useLang = () => useState("lang", () => "ar"); // Default language
-const lang = useLang();
-
 // ✅ Dynamically set direction
-const isAppRtl = computed(() => lang.value === "ar");
+const isAppRtl = useCookie("isAppRtl").value;
 </script>
 <template>
   <div>

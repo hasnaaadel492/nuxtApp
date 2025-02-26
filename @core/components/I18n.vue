@@ -12,6 +12,7 @@ const langCookie = useCookie("lang");
 watch(locale, (val) => {
   document.documentElement.setAttribute("lang", val);
   langCookie.value = val;
+  window.location.reload();
 });
 </script>
 

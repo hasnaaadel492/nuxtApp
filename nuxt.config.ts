@@ -20,7 +20,29 @@ export default defineNuxtConfig({
     lazy: true,
     langDir: "locales/",
     defaultLocale: "ar",
+    strategy: "no_prefix",
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: "lang",
+      alwaysRedirect: false, // Optional: Set to true if you want automatic redirection
+      fallbackLocale: "ar",
+    },
   },
+
+  // i18n: {
+  //   locales: [
+  //     { code: "en", iso: "en-US", file: "en.json" },
+  //     { code: "ar", iso: "ar-SA", file: "ar.json" },
+  //   ],
+  //   lazy: true,
+  //   langDir: "locales/",
+  //   defaultLocale: "ar",
+  //   detectBrowserLanguage: {
+  //     useCookie: true,
+  //     cookieKey: "i18n_redirected",
+  //     redirectOn: "root",
+  //   },
+  // },
   vuetify: {
     moduleOptions: {
       /* module specific options */

@@ -4,6 +4,7 @@ import { emailValidator, requiredValidator } from "@/@core/plugins/validators";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
+import MainButton from "~/@core/components/buttons/mainButton.vue";
 
 const { t } = useI18n();
 const showPhoneInput = ref(true);
@@ -29,7 +30,7 @@ const refVForm = ref<VForm>();
 const sendMessage = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     phoneNumberValue.value = "notEntered";
-
+    const { $api } = useNuxtApp();
     if (isValid) {
       $api("/support-ticket/support-tickets", {
         method: "POST",

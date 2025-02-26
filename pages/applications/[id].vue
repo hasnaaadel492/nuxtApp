@@ -23,11 +23,11 @@ const fetchApplication = async () => {
   }
 };
 
-watchEffect(() => {
+onMounted(() => {
   fetchApplication();
 
   const lang = useCookie("lang");
-  if (lang.value == "en") {
+  if (lang.value === "en") {
     const selectors = [".hero-circel1", ".hero-circel2"];
 
     selectors.forEach((selector) => {
@@ -36,7 +36,7 @@ watchEffect(() => {
       );
 
       elements.forEach((element) => {
-        element.style.transform = "rotate(180deg)";
+        element.style.transform = "rotate(180deg) ";
       });
     });
   }

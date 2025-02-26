@@ -20,7 +20,7 @@ export default defineNuxtPlugin(() => {
       "Accept-Language": lang.value || "ar",
       "X-Authorization":
         config.public.VITE_X_AUTHORIZATION ||
-        "0kbnSUh2SjEShddBbpzyG0htrFXDFLuH8e5WhgvjER9UE6XZdUuDGXigBFSDe789",
+        "UecYq9HzazyIjQ116v8E82VRLxotWPKiCm10gmH2kGF55EMN1TiBK5AhNq7rAa9k",
     };
 
     if (accessToken.value) {

@@ -27,31 +27,22 @@ const errors = ref<Record<string, string | undefined>>({
 const refVForm = ref<VForm>();
 
 // Login service
+const { $axios } = useNuxtApp();
+
 const login = async () => {
   const validation = await refVForm.value?.validate();
   if (!validation?.valid) return;
 
   try {
-    const { data, error } = await useFetch(
-      "https://api-dev.7lerp.com/central/api/tenant-owner/login",
-      {
-        method: "POST",
-        body: {
-          email: email.value,
-          password: password.value,
-        },
-        headers: {
-          "X-Authorization":
-            "UecYq9HzazyIjQ116v8E82VRLxotWPKiCm10gmH2kGF55EMN1TiBK5AhNq7rAa9k",
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await $axios.post("/tenant-owner/login", {
+      email: "your-email@example.com",
+      password: "your-password",
+    });
 
-    if (error.value) throw new Error(error.value?.message || "Login failed");
+    // Get token and user data from response
+    const token = response.data?.accessToken;
+    const userData = response.data?.user;
 
-    const token = data.value?.accessToken;
-    const userData = data.value?.user;
     if (!token) throw new Error("Invalid response from server");
 
     // Store token in cookies
@@ -70,12 +61,12 @@ const login = async () => {
     userCookie.value = userData;
 
     // Save token in localStorage
-    localStorage.setItem("token", token);
+    useCookie("token").value = token;
 
     auth.login(userData, token);
     await auth.profile();
 
-    router.replace(route.query.to ? String(route.query.to) : "/home");
+    router.replace(route.query.to ? String(route.query.to) : "/");
 
     setTimeout(() => {
       window.location.reload();

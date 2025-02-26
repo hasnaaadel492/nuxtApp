@@ -7,7 +7,7 @@ export const useFetchWithCsrf = <T>(url: string, options: any = {}) => {
   const headers = {
     ...options.headers,
     "X-Authorization":
-      "0kbnSUh2SjEShddBbpzyG0htrFXDFLuH8e5WhgvjER9UE6XZdUuDGXigBFSDe789",
+      "UecYq9HzazyIjQ116v8E82VRLxotWPKiCm10gmH2kGF55EMN1TiBK5AhNq7rAa9k",
   };
 
   // Use Nuxt's built-in `useFetch`

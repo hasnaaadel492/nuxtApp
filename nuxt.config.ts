@@ -1,9 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
-  devtools: { enabled: true },
+  pages: true,
+  ssr: false,
+  devtools: { enabled: false },
+
   app: {
     head: {
       title: "7lPos",
@@ -23,11 +25,12 @@ export default defineNuxtConfig({
   modules: [
     "@pinia/nuxt",
     "@nuxtjs/i18n",
-    "vuetify-nuxt-module",
+    // "vuetify-nuxt-module",
     "@vueuse/nuxt",
     "maz-ui/nuxt",
     "vue3-carousel-nuxt",
   ],
+  plugins: ["~/plugins/vuetify.js"],
 
   i18n: {
     locales: [
@@ -60,18 +63,14 @@ export default defineNuxtConfig({
   },
   css: [
     "@/assets/styles/styles.scss",
-    "primeicons/primeicons.css",
     "vuetify/styles",
-    "vuetify/lib/styles/main.sass",
     "@mdi/font/css/materialdesignicons.min.css",
+    "primeicons/primeicons.css",
+    "vuetify/lib/styles/main.sass",
   ],
 
+  components: true,
   build: {
     transpile: ["vuetify"],
-  },
-  vite: {
-    define: {
-      "process.env.DEBUG": false,
-    },
   },
 });

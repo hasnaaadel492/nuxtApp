@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import DeviceCard from "@/components/devices/DeviceCard.vue";
 import { onMounted, ref } from "vue";
+import AppHeading from "@/@core/components/AppHeading.vue";
 
 // Data
 const devices_section = ref([]);
@@ -32,6 +33,7 @@ const fetchDevices = async () => {
     totalPage.value = data.body.devices.paginate.last_page;
     totalDevices.value = data.body.devices.paginate.total;
     options.value.page = data.body.devices.paginate.current_page;
+    firstThreeDevices.value = devices_section.value.slice(0, 3);
   } catch (error) {
     console.error("Error fetching devices:", error);
   } finally {

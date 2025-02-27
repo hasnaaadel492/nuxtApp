@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 // import notify from "@/@core/plugins/toast";
+import AppHeading from "@/@core/components/AppHeading.vue";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 const subtitle = "contactUs";
 const mainPargraph = "mainPargraph";

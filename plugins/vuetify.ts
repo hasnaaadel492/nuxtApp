@@ -1,8 +1,7 @@
-import { defineNuxtPlugin } from "#app";
 import { createVuetify } from "vuetify";
+import * as components from "vuetify/components";
 
-export default defineNuxtPlugin((app) => {
-  const vuetify = createVuetify({ ssr: true });
-
-  app.vueApp.use(vuetify);
+export default defineNuxtPlugin((nuxtApp) => {
+  const vuetify = createVuetify({ components });
+  nuxtApp.vueApp.use(vuetify);
 });

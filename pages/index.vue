@@ -19,7 +19,7 @@ const PackagesComponents = defineAsyncComponent(
 );
 
 const BlogsComponent = defineAsyncComponent(
-  () => import("@/pages/blogs/index.vue")
+  () => import("@/components/blogs/blogsComponent.vue")
 );
 
 const header = ref({});

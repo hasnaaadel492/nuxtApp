@@ -189,6 +189,7 @@
 
 <script lang="ts" setup>
 import NavBarI18n from "@/@core/components/NavBarI18n.vue";
+import MainButton from "@/@core/components/buttons/mainButton.vue";
 // import { authStore } from '../../pages/auth/store/authStore'
 import { ref } from "vue";
 
@@ -203,10 +204,6 @@ const auth = {
   isAuthenticated: false,
 };
 const accessToken = useCookie("accessToken");
-
-const isLoggedIn = computed(
-  () => Boolean(accessToken.value) || auth.isAuthenticated
-);
 
 // Methods
 const showSideNav = (): void => {

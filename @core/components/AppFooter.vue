@@ -211,7 +211,7 @@ watchEffect(() => {
   }
 });
 const headers = [
-  { title: "home", pathLink: "/home" },
+  { title: "home", pathLink: "/" },
 
   { title: "advantages", pathLink: "/advantages" },
   { title: "packages", pathLink: "/packages" },

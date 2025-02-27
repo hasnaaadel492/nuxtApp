@@ -341,3 +341,16 @@ body {
 .v-messages__message {
   line-height: 1.5 !important;
 }
+
+.flex {
+  display: flex;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
+.align-center {
+  align-items: center;
+}
+.justify-content-end {
+  justify-content: flex-end;
+}

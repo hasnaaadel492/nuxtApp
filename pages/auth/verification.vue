@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import SubmitButton from "@/@core/components/buttons/submitButton.vue";
-import notify from "@/@core/plugins/toast";
+import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
+import { useSnackbarStore } from "~/stores/useSnackbar";
+const snackbarStore = useSnackbarStore();
 import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -46,13 +48,13 @@ const verificationCode = async () => {
       try {
         const response = await verifyOtp(email, code.value);
         sessionStorage.setItem("sessionToken", response.body.token);
-        notify(response.message, response.status);
+        snackbarStore.showSnackbar(response.message, response.status);
 
         setTimeout(() => {
           router.push("/auth/resetPassword");
         }, 1000);
       } catch (error) {
-        notify(error.message, error.status);
+        snackbarStore.showSnackbar(error.message, error.status);
       }
     }
   });
@@ -64,14 +66,14 @@ const resendCode = async () => {
 
   try {
     const response = await resendOtp(email);
-    notify(response.message, response.status);
+    snackbarStore.showSnackbar(response.message, true);
 
     // Reset counting flag and countdown
     counting.value = false;
     sessionStorage.removeItem("countdownEndTime");
     startCountdown(); // Restart the countdown
   } catch (error) {
-    notify(error.message, error.status);
+    snackbarStore.showSnackbar(error.message, error.status);
   }
 };
 
@@ -125,6 +127,8 @@ watchEffect(() => {
 
 <template>
   <div class="auth">
+    <SnakbarComponent />
+
     <img class="hero-circel1" src="@/assets/images/hero-circle1.svg" alt="" />
 
     <div class="form_content">

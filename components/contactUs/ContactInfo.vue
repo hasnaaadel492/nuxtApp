@@ -30,7 +30,6 @@ const socials = ref({
   facebook: "",
   instagram: "",
 });
-
 const getContactInfo = async () => {
   try {
     const { $api } = useNuxtApp(); // ✅ No need to import!
@@ -80,7 +79,6 @@ const modifiedIframeHtml = computed(() => {
 
   return iframeHtml;
 });
-
 watchEffect(getContactInfo);
 </script>
 
@@ -89,7 +87,6 @@ watchEffect(getContactInfo);
     <div class="contactInfo-heading">
       <h3>{{ $t("contactsData") }}</h3>
     </div>
-
     <div class="contactInfo-list">
       <ul>
         <li class="info-item">

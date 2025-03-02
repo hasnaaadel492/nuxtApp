@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import notify from "@/@core/plugins/toast";
-import axios from "@axios";
+import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
+import { useSnackbarStore } from "~/stores/useSnackbar";
+const snackbarStore = useSnackbarStore();
+
 import { confirmedValidator, passwordValidator } from "@validators";
 import { VForm } from "vuetify/components/VForm";
 
@@ -12,6 +14,7 @@ const { t } = useI18n();
 const router = useRouter();
 const refVForm = ref<VForm>();
 const lang = useCookie("lang");
+const { $axios } = useNuxtApp();
 
 const resetPassword = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
@@ -19,7 +22,7 @@ const resetPassword = () => {
       const email = sessionStorage.getItem("email");
       const sessionToken = sessionStorage.getItem("sessionToken");
 
-      axios
+      $axios
         .post("/tenant-owner/reset-password", {
           email: email,
           token: sessionToken,
@@ -27,13 +30,17 @@ const resetPassword = () => {
           password_confirmation: confirmNewPassword.value,
         })
         .then((res) => {
-          notify(res.data.message, res.data.status);
+          snackbarStore.showSnackbar(res.data.message, true);
+
           setTimeout(() => {
             router.push("/auth/login");
           }, 1000);
         })
         .catch((error) => {
-          notify(error.response.data.message, error.response.data.status);
+          snackbarStore.showSnackbar(
+            error.response.data.message,
+            error.response.data.status
+          );
         });
     }
   });
@@ -71,6 +78,8 @@ watchEffect(() => {
 
 <template>
   <div class="auth">
+    <SnakbarComponent />
+
     <img class="hero-circel1" src="@/assets/images/hero-circle1.svg" alt="" />
 
     <div class="form_content">

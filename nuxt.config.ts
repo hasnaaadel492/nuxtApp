@@ -25,12 +25,14 @@ export default defineNuxtConfig({
   modules: [
     "@pinia/nuxt",
     "@nuxtjs/i18n",
-    // "vuetify-nuxt-module",
+    "vue3-carousel-nuxt",
+    // "@primevue/nuxt-module",
+    "vuetify-nuxt-module",
     "@vueuse/nuxt",
     "maz-ui/nuxt",
     "vue3-carousel-nuxt",
   ],
-  plugins: ["~/plugins/vuetify.js"],
+  // plugins: ["~/plugins/vuetify.js"],
 
   i18n: {
     locales: [

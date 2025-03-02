@@ -10,7 +10,9 @@ import {
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
-
+import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
+import { useSnackbarStore } from "~/stores/useSnackbar";
+const snackbarStore = useSnackbarStore();
 const { t } = useI18n();
 
 const isYourPasswordVisible = ref(false);
@@ -87,7 +89,10 @@ const validateForm = async () => {
         })
         .catch((error) => {
           window.scrollTo({ top: 400, behavior: "smooth" });
-          // notify(error.response.data.message, error.response.data.status)
+          snackbarStore.showSnackbar(
+            error.response.data.message,
+            error.response.data.status
+          );
 
           // Map and assign errors
           errors.value = mapErrors(error.response.data.body);
@@ -118,6 +123,8 @@ const validateFormBlur = async () => {
 
 <template>
   <VForm ref="refForm" v-model="isFormValid" @submit.prevent="validateForm()">
+    <SnakbarComponent />
+
     <!-- Pos Data -->
     <div class="pos-data">
       <div class="pos-data-title">

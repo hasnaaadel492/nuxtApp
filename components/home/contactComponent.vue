@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-// import notify from "@/@core/plugins/toast";
+import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
+import { useSnackbarStore } from "~/stores/useSnackbar";
+const snackbarStore = useSnackbarStore();
 import AppHeading from "@/@core/components/AppHeading.vue";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 const subtitle = "contactUs";
@@ -72,16 +74,17 @@ const form = ref(null); // Reference to the form
 const sendMessage = async () => {
   if (name.value && email.value && message.value && phone.value) {
     try {
-      const { $api } = useNuxtApp();
+      const { $axios } = useNuxtApp();
 
-      const res = await $api.post("/support-ticket/support-tickets", {
+      const res = await $axios.post("/support-ticket/support-tickets", {
         name: name.value,
         email: email.value,
         phone: phone.value,
         message: message.value,
       });
 
-      // notify(res.data.message, res.data.status, '')
+      snackbarStore.showSnackbar(res.data.message, res.data.status);
+
       showPhoneInput.value = false;
       setTimeout(() => {
         showPhoneInput.value = true;
@@ -92,17 +95,19 @@ const sendMessage = async () => {
       message.value = "";
       phone.value = "";
       results.value = null;
-    } catch (error) {
-      // notify(error.response.data.message, error.response.data.status, '')
+    } catch (error: any) {
+      snackbarStore.showSnackbar(
+        error.response.data.message,
+        error.response.data.status
+      );
     }
   } else {
-    // notify(
-    //   useCookie("lang").value === "ar"
-    //     ? "يجب عليك إدخال البيانات لجميع الحقول ."
-    //     : "Please fill in all required fields.",
-    //   false,
-    //   ""
-    // );
+    snackbarStore.showSnackbar(
+      useCookie("lang").value === "ar"
+        ? "يجب عليك إدخال البيانات لجميع الحقول ."
+        : "Please fill in all required fields.",
+      false
+    );
   }
 };
 
@@ -122,6 +127,8 @@ const results = ref({});
     <!-- Start:: contact info -->
     <VRow>
       <VCol cols="12" md="6" sm="12" class="contact-forms">
+        <SnakbarComponent />
+
         <span class="card-title">{{ $t("send_to_us") }}</span>
         <VForm ref="form" class="single-contact" @submit.prevent="sendMessage">
           <div class="contact-form">

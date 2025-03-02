@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import notify from "@/@core/plugins/toast"; // Make sure this path is correct
-
+import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
+import { useSnackbarStore } from "~/stores/useSnackbar";
+const snackbarStore = useSnackbarStore();
 import {
   emailValidator,
   englishAlphaValidator,
@@ -21,13 +22,13 @@ const forgetPassword = async () => {
       try {
         const response = await sendOtp(email.value);
         sessionStorage.setItem("email", email.value);
-        // notify(response.message, response.status, 3000);
+        snackbarStore.showSnackbar(response.data.message, true);
 
         setTimeout(() => {
           router.push("/auth/verification");
         }, 500);
       } catch (error) {
-        // notify(error.message, error.status, 3000);
+        snackbarStore.showSnackbar(error.message, error.status);
       }
     }
   });
@@ -71,6 +72,8 @@ watchEffect(() => {
 
 <template>
   <div class="auth">
+    <SnakbarComponent />
+
     <img class="hero-circel1" src="@/assets/images/hero-circle1.svg" alt="" />
 
     <div class="form_content">

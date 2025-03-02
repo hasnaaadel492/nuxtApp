@@ -4,8 +4,9 @@ import PackageCard from "@/components/packages/PackageCard.vue";
 import { usePackageStore } from "@/stores/packageStore";
 import { registerStore } from "@/stores/registerStore";
 
-// import notify from '@/@core/plugins/toast'
-
+import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
+import { useSnackbarStore } from "~/stores/useSnackbar";
+const snackbarStore = useSnackbarStore();
 import formatNumber from "@/@core/utils/formattedNumber";
 
 const packageStore = usePackageStore();
@@ -57,7 +58,7 @@ const register = async () => {
           subscription: registerData.subscription,
         })
         .then((res) => {
-          notify(res.data.message, res.data.status);
+          snackbarStore.showSnackbar(res.data.message, res.data.status);
 
           registerData.$reset();
 
@@ -74,7 +75,10 @@ const register = async () => {
           auth.profile();
         })
         .catch((error) => {
-          // notify(error.response.data.message, error.response.data.status)
+          snackbarStore.showSnackbar(
+            error.response.data.message,
+            error.response.data.status
+          );
         });
     }
   });
@@ -84,6 +88,7 @@ const register = async () => {
 <template>
   <div class="summary">
     <!-- Package Card -->
+    <SnakbarComponent />
 
     <div class="packageCard mb-6">
       <PackageCard :package="selectedPackage" :is-center="true" />

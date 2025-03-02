@@ -24,6 +24,10 @@ const router = useRouter();
 const errors = ref<Record<string, string | undefined>>({
   message: undefined,
 });
+import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
+import { useSnackbarStore } from "~/stores/useSnackbar";
+const snackbarStore = useSnackbarStore();
+
 const refVForm = ref<VForm>();
 
 // Login service
@@ -35,13 +39,14 @@ const login = async () => {
 
   try {
     const response = await $axios.post("/tenant-owner/login", {
-      email: "your-email@example.com",
-      password: "your-password",
+      email: email.value,
+      password: password.value,
     });
 
     // Get token and user data from response
     const token = response.data?.accessToken;
     const userData = response.data?.user;
+    snackbarStore.showSnackbar(response.data.message, true);
 
     if (!token) throw new Error("Invalid response from server");
 
@@ -72,7 +77,8 @@ const login = async () => {
       window.location.reload();
     }, 50);
   } catch (error) {
-    console.error("Login error:", error.message);
+    snackbarStore.showSnackbar(error.message, false);
+
     errors.value.message = "login_cardinals";
     password.value = "";
   }
@@ -110,6 +116,8 @@ watchEffect(() => {
 
 <template>
   <div class="auth">
+    <SnakbarComponent />
+
     <img class="hero-circel1" src="@/assets/images/hero-circle1.svg" alt="" />
 
     <div class="form_content">

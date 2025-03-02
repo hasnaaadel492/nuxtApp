@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-// import notify from "@/@core/plugins/toast";
 import { emailValidator, requiredValidator } from "@/@core/plugins/validators";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import MainButton from "~/@core/components/buttons/mainButton.vue";
+import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
+import { useSnackbarStore } from "~/stores/useSnackbar";
 
+const snackbarStore = useSnackbarStore();
 const { t } = useI18n();
 const showPhoneInput = ref(true);
 const phoneNumberValue = ref("");
@@ -42,7 +44,8 @@ const sendMessage = () => {
         },
       })
         .then((res) => {
-          // notify(res.message, res.status, "");
+          snackbarStore.showSnackbar(res.message, true);
+
           showPhoneInput.value = false;
           setTimeout(() => {
             showPhoneInput.value = true;
@@ -58,7 +61,7 @@ const sendMessage = () => {
           results.value = {};
         })
         .catch((error) => {
-          // notify(error?.data?.message || "An error occurred", false, "");
+          snackbarStore.showSnackbar(error.data.message, false);
         });
     }
   });
@@ -76,6 +79,8 @@ watch(
 </script>
 <template>
   <div class="contactMessage">
+    <SnakbarComponent />
+
     <div class="contactMessage-heading">
       <h3>{{ t("send_to_us") }}</h3>
     </div>

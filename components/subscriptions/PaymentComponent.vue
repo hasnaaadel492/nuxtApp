@@ -232,17 +232,17 @@ onMounted(() => {
   );
 
   initMoyasar();
-  // snaptr("track", "ADD_BILLING", {
-  //   price: newTotalAfterDiscount.value
-  //     ? parseFloat(newTotalAfterDiscount.value) * 100
-  //     : (packageDetails?.total || 0) * 100,
-  //   currency: "SAR",
-  //   uuid_c1: "INSERT_UUID_C1",
-  //   user_email: "INSERT_USER_EMAIL",
-  //   user_phone_number: "INSERT_USER_PHONE_NUMBER",
-  //   user_hashed_email: "INSERT_USER_HASHED_EMAIL",
-  //   user_hashed_phone_number: "INSERT_USER_HASHED_PHONE_NUMBER",
-  // });
+  snaptr("track", "ADD_BILLING", {
+    price: newTotalAfterDiscount.value
+      ? parseFloat(newTotalAfterDiscount.value) * 100
+      : (packageDetails?.total || 0) * 100,
+    currency: "SAR",
+    uuid_c1: "INSERT_UUID_C1",
+    user_email: "INSERT_USER_EMAIL",
+    user_phone_number: "INSERT_USER_PHONE_NUMBER",
+    user_hashed_email: "INSERT_USER_HASHED_EMAIL",
+    user_hashed_phone_number: "INSERT_USER_HASHED_PHONE_NUMBER",
+  });
 });
 </script>
 

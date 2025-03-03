@@ -8,6 +8,7 @@ export default defineNuxtPlugin(async () => {
     withCredentials: true, // ✅ Enables cookies (including XSRF-TOKEN)
     headers: {
       "Accept-Language": useCookie("lang").value || "ar",
+      "X-CSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
 
       Accept: "application/json, text/plain, */*",
       "X-Authorization": env(

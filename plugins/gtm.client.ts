@@ -1,13 +1,23 @@
 export default defineNuxtPlugin((nuxtApp) => {
-  const gtmId = "GTM-XXXXXX"; // Replace dynamically if needed
+  nuxtApp.hook("app:mounted", async () => {
+    const { $axios } = useNuxtApp();
+    const { data } = await $axios("/web-setting/webSettings");
 
-  if (!gtmId) return;
+    if (!data) return;
 
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+    const gtmId = data.body.google_tag?.gtm_id;
 
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
-  document.head.appendChild(script);
+    if (!gtmId) return;
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      "gtm.start": new Date().getTime(),
+      event: "gtm.js",
+    });
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
+    document.head.appendChild(script);
+  });
 });

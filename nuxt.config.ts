@@ -3,7 +3,7 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   pages: true,
-  ssr: false,
+  ssr: true,
   devtools: { enabled: false },
 
   app: {
@@ -12,7 +12,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "description", content: "My amazing Nuxt 3 app" },
+        { name: "description", content: "Accounting solution program" },
       ],
       link: [
         {

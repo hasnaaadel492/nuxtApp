@@ -27,7 +27,7 @@ onMounted(() => {
   fetchApplication();
 
   const lang = useCookie("lang");
-  if (lang.value === "en") {
+  if (lang.value == "en") {
     const selectors = [".hero-circel1", ".hero-circel2"];
 
     selectors.forEach((selector) => {

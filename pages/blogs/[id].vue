@@ -1,93 +1,77 @@
 <script lang="ts" setup>
-import loadingGif from "@/assets/images/newLogo2.png";
 import { useHead } from "@unhead/vue";
+import { useRoute } from "vue-router";
+import { useNuxtApp, useAsyncData, useCookie } from "#app";
+import loadingGif from "@/assets/images/newLogo2.png";
+import NotFound from "~/@core/components/NotFound.vue";
 
+// Get route ID
+const route = useRoute();
 const subtitle = ref("");
 const mainPargraph = "mainPargraph";
+const errorDescription = ref();
+const pageNotFound = ref(false);
 
-const route = useRoute();
+// Fetch blog data using SSR-friendly `useAsyncData`
+const { data: blog, error } = await useAsyncData(
+  `blog-${route.params.id}`,
+  async () => {
+    const { $axios } = useNuxtApp();
 
-const blog = ref({});
-const metaTags = [];
-
-const search_engine_optimizations = ref([]);
-
-const fetchBlog = async () => {
-  try {
-    const { $api } = useNuxtApp();
-
-    const data = await $api<{}>(`/blog/blogs/${route.params.id}`);
-
-    blog.value = data.body.blog;
-    subtitle.value = blog.value.title;
-    search_engine_optimizations.value =
-      data.body.blog.search_engine_optimizations;
-
-    metaTags.splice(0, metaTags.length);
-
-    search_engine_optimizations.value.forEach((item) => {
-      metaTags.push({
-        name: item.name,
-        content: item.content,
-      });
-    });
-    // After updating metaTags array, update the head
-    updateHead();
-  } catch (error) {
-    console.error("Error fetching devices:", error);
+    try {
+      const response = await $axios(`/blog/blogs/${route.params.id}`);
+      subtitle.value = response.data.body.blog.title;
+      return response.data.body.blog; // ✅ Ensure you return data properly
+    } catch (err) {
+      errorDescription.value =
+        err.response?.data?.message || "An error occurred";
+      pageNotFound.value = true;
+      return null; // ✅ Return `null` to handle the error gracefully
+    }
   }
-};
+);
 
+// Meta tags reactive state
+const metaTags = computed(() => {
+  return (
+    blog.value?.search_engine_optimizations?.map((item) => ({
+      name: item.name,
+      content: item.content,
+    })) || []
+  );
+});
+
+// Set dynamic meta tags using `useHead`
+useHead(() => ({
+  title: blog.value?.title || "Blog Page",
+  meta: metaTags.value,
+}));
+
+// Language handling
 const lang = useCookie("lang");
 
-const formatDate = (isoString) => {
+// Format date function
+const formatDate = (isoString: string) => {
+  if (!isoString) return "";
   const date = new Date(isoString);
-  const options = {
+  return date.toLocaleString(lang.value === "en" ? "en-US" : "ar", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  };
-  return date.toLocaleString(lang.value == "en" ? "en-US" : "ar", options);
+  });
 };
 
-const useHeadObject = {
-  title: "blog page",
-  meta: metaTags,
-};
-
-// Function to update the head with new metaTags
-const updateHead = () => {
-  useHead(useHeadObject);
-};
-
-watchEffect(() => {
-  fetchBlog();
-});
-
-watchEffect(() => {
-  const lang = useCookie("lang");
-
+// Rotate elements if language is English (client-side only)
+onMounted(() => {
   if (lang.value === "en") {
     nextTick(() => {
       const blogComponent = document.querySelector(".blogComponent");
+      if (!blogComponent) return;
 
-      if (!blogComponent) {
-        console.warn("`.blogComponent` not found in the DOM.");
-        return;
-      }
-
-      const selectors = [".hero-circel1", ".hero-circel2"];
-
-      selectors.forEach((selector) => {
-        const elements = blogComponent.querySelectorAll(selector);
-
-        if (elements.length === 0) {
-          console.warn(`No elements found for selector: ${selector}`);
-        } else {
-          elements.forEach((element) => {
-            element.style.transform = "rotate(180deg)";
-          });
-        }
+      [".hero-circel1", ".hero-circel2"].forEach((selector) => {
+        blogComponent.querySelectorAll(selector).forEach((element) => {
+          (element as HTMLElement).style.transform = "rotate(180deg)";
+        });
       });
     });
   }
@@ -111,8 +95,14 @@ watchEffect(() => {
     </div>
 
     <img class="hero-circel1" src="@/assets/images/hero-circle1.svg" alt="" />
-
-    <VContainer>
+    <div
+      v-if="pageNotFound"
+      class="d-flex"
+      style="width: 100%; justify-content: center"
+    >
+      <NotFound :errorDescription="errorDescription" />
+    </div>
+    <VContainer v-else>
       <div class="blogsContainer">
         <VRow>
           <VCol cols="12" md="12" sm="12" class="blog-card">

@@ -185,7 +185,7 @@ watchEffect(() => {
   getContacts();
   const lang = useCookie("lang");
 
-  if (lang.value === "en") {
+  if (lang.value == "en") {
     nextTick(() => {
       const headerList = document.querySelector(".headers-list");
 

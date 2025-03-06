@@ -4,7 +4,7 @@ import { useNuxtApp, useCookie } from "#app";
 export const useAuthStore = defineStore("authStore", {
   state: () => ({
     userProfile: useCookie("userData").value
-      ? JSON.parse(useCookie("userData").value)
+      ? useCookie("userData").value
       : null,
     storeProfile: null,
     accessToken: useCookie("accessToken").value || null,

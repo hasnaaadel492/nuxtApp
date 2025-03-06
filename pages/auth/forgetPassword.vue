@@ -15,21 +15,31 @@ const { t } = useI18n();
 const router = useRouter();
 
 const refVForm = ref<VForm>();
+const { $axios } = useNuxtApp();
 
-const forgetPassword = async () => {
-  refVForm.value?.validate().then(async ({ valid: isValid }) => {
+const forgetPassword = () => {
+  refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
-      try {
-        const response = await sendOtp(email.value);
-        sessionStorage.setItem("email", email.value);
-        snackbarStore.showSnackbar(response.data.message, true);
+      $axios
+        .post("/tenant-owner/send-otp", {
+          email: email.value,
+        })
+        .then((res) => {
+          console.log(res);
 
-        setTimeout(() => {
-          router.push("/auth/verification");
-        }, 500);
-      } catch (error) {
-        snackbarStore.showSnackbar(error.message, error.status);
-      }
+          sessionStorage.setItem("email", email.value);
+          snackbarStore.showSnackbar(res.data.message, res.data.status);
+
+          setTimeout(() => {
+            router.push("/auth/verification");
+          }, 500);
+        })
+        .catch((error) => {
+          snackbarStore.showSnackbar(
+            error.response.data.message,
+            error.response.data.status
+          );
+        });
     }
   });
 };

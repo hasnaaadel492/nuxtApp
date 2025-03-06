@@ -33,55 +33,48 @@ const refVForm = ref<VForm>();
 // Login service
 const { $axios } = useNuxtApp();
 
-const login = async () => {
-  const validation = await refVForm.value?.validate();
-  if (!validation?.valid) return;
+const login = () => {
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid) {
+      $axios
+        .post("/tenant-owner/login", {
+          email: email.value,
+          password: password.value,
+        })
+        .then((res) => {
+          console.log("Response Data:", res.data);
 
-  try {
-    const response = await $axios.post("/tenant-owner/login", {
-      email: email.value,
-      password: password.value,
-    });
+          const token = res.data.accessToken || res.data.body?.accessToken;
+          const userData = res.data.user || res.data.body?.user;
 
-    // Get token and user data from response
-    const token = response.data?.accessToken;
-    const userData = response.data?.user;
-    snackbarStore.showSnackbar(response.data.message, true);
+          if (!token) {
+            throw new Error("Invalid response: No token received");
+          }
 
-    if (!token) throw new Error("Invalid response from server");
+          const accessToken = useCookie("accessToken");
+          const userCookie = useCookie("userData");
 
-    // Store token in cookies
-    const accessToken = useCookie("accessToken", {
-      maxAge: 60 * 60 * 24 * 7,
-      secure: true,
-      sameSite: "strict",
-    });
-    const userCookie = useCookie("userData", {
-      maxAge: 60 * 60 * 24 * 7,
-      secure: true,
-      sameSite: "strict",
-    });
+          accessToken.value = token;
+          userCookie.value = userData;
 
-    accessToken.value = token;
-    userCookie.value = userData;
+          // snackbarStore.showSnackbar(res.data.message, true);
 
-    // Save token in localStorage
-    useCookie("token").value = token;
+          try {
+            auth.login(userData, token);
+            auth.fetchProfile();
+          } catch (authError) {
+            console.error("Auth error:", authError);
+          }
 
-    auth.login(userData, token);
-    await auth.profile();
-
-    router.replace(route.query.to ? String(route.query.to) : "/");
-
-    setTimeout(() => {
-      window.location.reload();
-    }, 50);
-  } catch (error) {
-    snackbarStore.showSnackbar(error.message, false);
-
-    errors.value.message = "login_cardinals";
-    password.value = "";
-  }
+          router.push("/");
+        })
+        .catch((error) => {
+          console.error("Login failed:", error);
+          errors.value.message = "login_cardinals";
+          password.value = "";
+        });
+    }
+  });
 };
 
 watchEffect(() => {
@@ -116,7 +109,7 @@ watchEffect(() => {
 
 <template>
   <div class="auth">
-    <SnakbarComponent />
+    <SnakbarComponent v-if="token" />
 
     <img class="hero-circel1" src="@/assets/images/hero-circle1.svg" alt="" />
 

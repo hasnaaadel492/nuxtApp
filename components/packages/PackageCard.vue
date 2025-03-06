@@ -72,6 +72,8 @@ const selectPackage = (packageDetails: any) => {
   useCookie("packageDetails").value = JSON.stringify(packageDetails);
 
   registerData.setPackageId(useCookie("packageId").value);
+  console.log(useCookie("packageId").value);
+
   packageStore.setPackage(useCookie("packageDetails").value);
 
   if (accessToken) {

@@ -190,7 +190,8 @@
 <script lang="ts" setup>
 import NavBarI18n from "@/@core/components/NavBarI18n.vue";
 import MainButton from "@/@core/components/buttons/mainButton.vue";
-// import { authStore } from '../../pages/auth/store/authStore'
+import AppUserHeader from "@/@core/components/AppUserHeader.vue";
+import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
 
 // Reactive data properties
@@ -199,11 +200,9 @@ const sideNavIsVisable = ref<boolean>(false);
 const buttoncontent = ref<string>("joinUs");
 const isScrolled = ref<boolean>(false);
 
-// const auth = authStore()
-const auth = {
-  isAuthenticated: false,
-};
-const accessToken = useCookie("accessToken");
+const auth = useAuthStore();
+
+const accessToken = useCookie("accessToken").value;
 
 // Methods
 const showSideNav = (): void => {

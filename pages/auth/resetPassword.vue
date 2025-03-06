@@ -30,6 +30,8 @@ const resetPassword = () => {
           password_confirmation: confirmNewPassword.value,
         })
         .then((res) => {
+          console.log(res);
+
           snackbarStore.showSnackbar(res.data.message, true);
 
           setTimeout(() => {

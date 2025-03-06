@@ -25,6 +25,7 @@
     "vue": "latest",
     "vue-router": "latest",
     "vue3-carousel-nuxt": "^1.1.5",
+    "vue3-perfect-scrollbar": "^2.0.0",
     "vuetify-nuxt-module": "^0.18.3"
   },
   "devDependencies": {

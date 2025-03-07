@@ -7,7 +7,7 @@ const snackbarStore = useSnackbarStore();
 import { useAuthStore } from "@/stores/authStore";
 
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
-const lang = localStorage.getItem("lang");
+const lang = useCookie("lang").value;
 const errors = ref<Record<string, string | undefined>>({
   name: undefined,
   slug: undefined,
@@ -42,7 +42,7 @@ const tenantStatus = ref("un_active");
 const refInputEl = ref<HTMLElement>();
 // const countryCode = userDatas.phone_utility.country
 const refVForm = ref<VForm>();
-
+const { $axios } = useNuxtApp();
 // Update Method
 const onFormSubmit = () => {
   const data = new FormData();
@@ -58,7 +58,7 @@ const onFormSubmit = () => {
 
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid && userData.value.phone) {
-      axios
+      $axios
         .post("/tenant-owner/profile" + "?_method=patch", data, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -112,12 +112,11 @@ const uploadImage = (e) => {
     imageChanged.value = true;
     errors.value.image = undefined;
   } else {
-    notify(
-      localStorage.getItem("lang") === "ar"
+    snackbarStore.showSnackbar(
+      useCookie("lang").value == "ar"
         ? "يجب تحديد صورة من نوع png,jpg,gif"
         : "Please select a image of type png,jpg,gif.",
-      false,
-      ""
+      false
     );
   }
 };
@@ -127,12 +126,12 @@ watch(
     userData.value = newProfile;
     subscription_status.value = newProfile.subscription_status;
     tenantStatus.value = newProfile.tenantStatus;
-    localStorage.setItem("userData", JSON.stringify(newProfile));
+    useCookie("userData").value = newProfile;
   }
 );
 
 const getProfile = () => {
-  auth.profile().catch((error) => {
+  auth.fetchProfile().catch((error) => {
     console.error("Failed to fetch profile:", error);
   });
 };
@@ -191,7 +190,10 @@ onMounted(() => {
                     />
 
                     <!-- 👉 Upload Photo -->
-                    <form class="d-flex flex-column justify-center gap-4">
+                    <form
+                      class="d-flex flex-column justify-center gap-4"
+                      style="gap: 10px"
+                    >
                       <div class="d-flex flex-wrap gap-4">
                         <VBtn
                           color="primary"
@@ -241,6 +243,7 @@ onMounted(() => {
                         :placeholder="t('name')"
                         v-model="userData.username"
                         :rules="[requiredValidator(userData.username, t)]"
+                        variant="outlined"
                       />
                     </div>
                   </VCol>
@@ -309,6 +312,7 @@ onMounted(() => {
                         type="text"
                         :placeholder="t('email')"
                         v-model="userData.email"
+                        variant="outlined"
                         :rules="[
                           requiredValidator(userData.email, t),
                           emailValidator(userData.email, t),
@@ -321,11 +325,15 @@ onMounted(() => {
 
                 <VRow>
                   <!-- 👉 Form Actions -->
-                  <VCol cols="12" class="d-flex flex-wrap gap-4">
+                  <VCol
+                    cols="12"
+                    class="d-flex flex-wrap gap-4"
+                    style="gap: 10px"
+                  >
                     <VBtn
                       type="submit"
                       @click="dialog = true"
-                      style="background: #157d99 !important"
+                      style="background: #157d99 !important; color: #fff"
                     >
                       {{ $t("save_changes") }}
                     </VBtn>

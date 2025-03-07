@@ -25,14 +25,14 @@ const formatDate = (isoString) => {
     day: "numeric",
   };
   return date.toLocaleString(
-    localStorage.getItem("lang") === "en" ? "en-US" : "ar",
+    useCookie("lang").value === "en" ? "en-US" : "ar",
     options
   );
 };
 
 const packageStore = usePackageStore();
 const registerData = registerStore();
-const $axios = useNuxtApp();
+const { $axios } = useNuxtApp();
 const getTenantSubscription = () => {
   $axios({
     method: "GET",
@@ -42,14 +42,11 @@ const getTenantSubscription = () => {
     ended_at.value = res.data.body.subscription.ended_at;
     is_expired.value = res.data.body.subscription.is_expired;
     packageDetails.value.paid_amount = res.data.body.subscription.paid_amount;
-    localStorage.setItem("packageId", packageDetails.value.id);
-    localStorage.setItem(
-      "packageDetails",
-      JSON.stringify(packageDetails.value)
-    );
+    useCookie("packageId").value = packageDetails.value.id;
+    useCookie("packageDetails").value = packageDetails.value;
 
-    registerData.setPackageId(localStorage.getItem("packageId"));
-    packageStore.setPackage(JSON.parse(localStorage.getItem("packageDetails")));
+    registerData.setPackageId(useCookie("packageId").value);
+    packageStore.setPackage(useCookie("packageDetails").value);
   });
 };
 

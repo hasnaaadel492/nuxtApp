@@ -27,7 +27,7 @@ const forgetPassword = () => {
         .then((res) => {
           console.log(res);
 
-          sessionStorage.setItem("email", email.value);
+          useCookie("storedEmail").value = email.value;
           snackbarStore.showSnackbar(res.data.message, res.data.status);
 
           setTimeout(() => {

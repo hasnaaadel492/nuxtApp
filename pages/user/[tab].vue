@@ -16,7 +16,8 @@ const userData = ref({
 
 const route = useRoute();
 
-const activeTab = ref(route.params.tab);
+const activeTab = route.params.tab;
+
 const { t } = useI18n();
 const auth = useAuthStore();
 const subscription_status = ref(1);
@@ -117,10 +118,10 @@ onMounted(() => {
   </div>
 </template>
 
-<route lang="yaml">
+<!-- <route lang="yaml">
 meta:
   navActiveLink: user-tab
-</route>
+</route> -->
 
 <style lang="scss">
 .AccountSettings {

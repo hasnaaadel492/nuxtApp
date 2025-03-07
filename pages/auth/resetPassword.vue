@@ -19,8 +19,8 @@ const { $axios } = useNuxtApp();
 const resetPassword = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
-      const email = sessionStorage.getItem("email");
-      const sessionToken = sessionStorage.getItem("sessionToken");
+      const email = useCookie("storedEmail").value;
+      const sessionToken = useCookie("sessionToken").value;
 
       $axios
         .post("/tenant-owner/reset-password", {

@@ -209,6 +209,11 @@ watchEffect(() => {
     padding-block-start: 50px;
   }
 
+  a {
+    color: rgb(var(--v-theme-primary)) !important;
+    text-decoration: none;
+  }
+
   .form_content {
     // display: flex;
     align-items: center;

@@ -15,7 +15,7 @@ const storeData = ref({
 
 const getStore = () => {
   auth
-    .store()
+    .fetchStore()
     .then((res) => {
       storeData.value.description = res.data.body.tenant.description;
       storeData.value.slug = res.data.body.tenant.slug;

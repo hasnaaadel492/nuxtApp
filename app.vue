@@ -10,16 +10,18 @@ const isAppRtl = useCookie("isAppRtl");
 </script>
 
 <template>
-  <NuxtLayout
-    :dir="isAppRtl ? 'rtl' : 'ltr'"
-    :class="{ rtl: isAppRtl, ltr: !isAppRtl }"
-  >
-    <AppHeader />
-    <NuxtPage />
-    <AppFooter />
-    <WhatsAppIcon />
-    <ScrollToTop />
-  </NuxtLayout>
+  <VLocaleProvider :rtl="isAppRtl">
+    <NuxtLayout
+      :dir="isAppRtl ? 'rtl' : 'ltr'"
+      :class="{ rtl: isAppRtl, ltr: !isAppRtl }"
+    >
+      <AppHeader />
+      <NuxtPage />
+      <AppFooter />
+      <WhatsAppIcon />
+      <ScrollToTop />
+    </NuxtLayout>
+  </VLocaleProvider>
 </template>
 
 <style scoped>

@@ -5,7 +5,11 @@ export default defineNuxtConfig({
   pages: true,
   ssr: true,
   devtools: { enabled: false },
-
+  router: {
+    options: {
+      middleware: ["auth.global"],
+    },
+  },
   app: {
     head: {
       title: "7lPos",

@@ -124,7 +124,7 @@ onMounted(() => {
           v-model="menuExpanded"
           activator="parent"
         >
-          <VList>
+          <VList style="background-color: #fff !important">
             <!-- <PerfectScrollbar :options="{ wheelPropagation: false }"> -->
             <template v-for="item in userProfileList" :key="item.title">
               <VListItem
@@ -164,7 +164,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .profileButton {
   // Name
   .v-badge__wrapper {
@@ -176,6 +176,8 @@ onMounted(() => {
     cursor: pointer;
     justify-items: center;
     margin-inline-start: 15px;
+    gap: 6px;
+    align-items: center;
 
     .title {
       color: #6e6b7b;

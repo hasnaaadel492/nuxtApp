@@ -8,9 +8,7 @@ onMounted(() => {
   const newTotalAfterDiscount = ref(useCookie("NewTotalAfterDiscount"));
   const packageDetailsCookie = useCookie("packageDetails").value;
   const packageDetails =
-    typeof packageDetailsCookie === "string"
-      ? JSON.parse(packageDetailsCookie)
-      : {};
+    typeof packageDetailsCookie === "string" ? packageDetailsCookie : {};
   const lang = useCookie("lang").value;
 
   if (lang === "en") {

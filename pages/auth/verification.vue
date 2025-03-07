@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import SubmitButton from "@/@core/components/buttons/submitButton.vue";
-import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
-import { useSnackbarStore } from "~/stores/useSnackbar";
-const snackbarStore = useSnackbarStore();
+import notify from "@/@core/plugins/toast";
 import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
+import { useSnackbarStore } from "~/stores/useSnackbar";
+import { useRouter } from "vue-router";
 
+const snackbarStore = useSnackbarStore();
 const code = ref("");
 const { t } = useI18n();
 const router = useRouter();
@@ -13,14 +15,18 @@ const refVForm = ref<VForm>();
 const counting = ref(false);
 const countdownTime = 60000; // 1 minute in milliseconds
 
-const remainingTime = computed(() => {
-  const savedEndTime = sessionStorage.getItem("countdownEndTime");
-  if (savedEndTime) {
-    const endTime = parseInt(savedEndTime);
-    const timeLeft = endTime - Date.now();
+// Use useState instead of sessionStorage for countdown timer and email
+const countdownEndTime = useState<number | null>(
+  "countdownEndTime",
+  () => null
+);
+const storedEmail = useCookie("storedEmail").value;
 
+const remainingTime = computed(() => {
+  if (countdownEndTime.value) {
+    const timeLeft = countdownEndTime.value - Date.now();
     if (timeLeft <= 0) {
-      onCountdownEnd(); // Trigger countdown end when timeLeft reaches 0
+      onCountdownEnd();
       return 0;
     }
     return timeLeft;
@@ -29,97 +35,85 @@ const remainingTime = computed(() => {
 });
 
 const startCountdown = (duration = countdownTime) => {
-  const end = Date.now() + duration;
-  sessionStorage.setItem("countdownEndTime", end.toString());
+  countdownEndTime.value = Date.now() + duration;
   counting.value = true;
 };
 
 const onCountdownEnd = () => {
   counting.value = false;
-  sessionStorage.removeItem("countdownEndTime");
-  remainingTime.value = 60000;
+  countdownEndTime.value = null;
 };
 
-const verificationCode = async () => {
-  refVForm.value?.validate().then(async ({ valid: isValid }) => {
+const { $axios } = useNuxtApp();
+
+const verificationCode = () => {
+  refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid && code.value) {
-      const email = sessionStorage.getItem("email");
+      const email = storedEmail; // Get email from useState
 
-      try {
-        const response = await verifyOtp(email, code.value);
-        sessionStorage.setItem("sessionToken", response.body.token);
-        snackbarStore.showSnackbar(response.message, response.status);
+      $axios
+        .post("/tenant-owner/verify", {
+          email: email,
+          code: code.value,
+        })
+        .then((res) => {
+          useCookie("sessionToken").value = res.data.body.token;
+          snackbarStore.showSnackbar(res.data.message, res.data.status);
 
-        setTimeout(() => {
-          router.push("/auth/resetPassword");
-        }, 1000);
-      } catch (error) {
-        snackbarStore.showSnackbar(error.message, error.status);
-      }
+          setTimeout(() => {
+            router.push("/auth/resetPassword");
+          }, 1000);
+        })
+        .catch((error) => {
+          snackbarStore.showSnackbar(
+            error.response.data.message,
+            error.response.data.status
+          );
+        });
     }
   });
 };
 
-const resendCode = async () => {
+const resendCode = () => {
   code.value = "";
-  const email = sessionStorage.getItem("email");
+  const email = storedEmail;
 
-  try {
-    const response = await resendOtp(email);
-    snackbarStore.showSnackbar(response.message, true);
-
-    // Reset counting flag and countdown
-    counting.value = false;
-    sessionStorage.removeItem("countdownEndTime");
-    startCountdown(); // Restart the countdown
-  } catch (error) {
-    snackbarStore.showSnackbar(error.message, error.status);
-  }
+  $axios
+    .post("/tenant-owner/send-otp", {
+      email: email,
+    })
+    .then((res) => {
+      snackbarStore.showSnackbar(res.data.message, res.data.status);
+      counting.value = false;
+      countdownEndTime.value = null;
+      startCountdown();
+    })
+    .catch((error) => {
+      snackbarStore.showSnackbar(
+        error.response.data.message,
+        error.response.data.status
+      );
+    });
 };
 
-const lang = useCookie("lang");
+const lang = useCookie("lang").value;
 
-watchEffect(() => {
-  const lang = useCookie("lang"); // Ensure lang is properly defined
+onMounted(() => {
+  if (lang == "en") {
+    const selectors = [".hero-circel1", ".hero-circel2"];
 
-  if (lang.value === "en") {
-    nextTick(() => {
-      const authComponent = document.querySelector(".auth");
+    selectors.forEach((selector) => {
+      const elements = document.querySelectorAll(`.auth ${selector}`);
 
-      if (!authComponent) {
-        console.warn("`.auth` component not found in the DOM.");
-        return;
-      }
-
-      const selectors = [".hero-circel1", ".hero-circel2"];
-
-      selectors.forEach((selector) => {
-        const elements = authComponent.querySelectorAll(selector);
-
-        if (elements.length === 0) {
-          console.warn(`No elements found for selector: ${selector}`);
-        } else {
-          elements.forEach((element) => {
-            element.style.transform = "rotate(180deg)";
-          });
-        }
+      elements.forEach((element) => {
+        element.style.transform = "rotate(180deg)";
       });
     });
   }
-  // Initialize countdown based on saved end time or start a new countdown
-  let savedEndTime = sessionStorage.getItem("countdownEndTime");
 
-  if (savedEndTime) {
-    const timeLeft = remainingTime.value;
-
-    if (timeLeft > 0) {
-      startCountdown(timeLeft);
-    } else {
-      onCountdownEnd();
-      savedEndTime = "0";
-    }
+  if (remainingTime.value > 0) {
+    startCountdown(remainingTime.value);
   } else {
-    // No saved end time, start a new countdown
     startCountdown();
   }
 });

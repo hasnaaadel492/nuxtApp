@@ -42,8 +42,6 @@ const login = () => {
           password: password.value,
         })
         .then((res) => {
-          console.log("Response Data:", res.data);
-
           const token = res.data.accessToken || res.data.body?.accessToken;
           const userData = res.data.user || res.data.body?.user;
 

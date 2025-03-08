@@ -32,11 +32,11 @@ const refVForm = ref<VForm>();
 const sendMessage = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     phoneNumberValue.value = "notEntered";
-    const { $api } = useNuxtApp();
+    const { $axios } = useNuxtApp();
     if (isValid) {
-      $api("/support-ticket/support-tickets", {
+      $axios("/support-ticket/support-tickets", {
         method: "POST",
-        body: {
+        data: {
           name: name.value,
           email: email.value,
           phone: phoneNumber.value,
@@ -44,7 +44,7 @@ const sendMessage = () => {
         },
       })
         .then((res) => {
-          snackbarStore.showSnackbar(res.message, true);
+          snackbarStore.showSnackbar(res.data.message, res.data.status);
 
           showPhoneInput.value = false;
           setTimeout(() => {
@@ -52,7 +52,7 @@ const sendMessage = () => {
           }, 1);
 
           // Reset form fields
-          phoneNumber.value = null;
+          phoneNumber.value = "";
           name.value = null;
           email.value = null;
           message.value = null;

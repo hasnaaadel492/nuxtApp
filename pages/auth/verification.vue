@@ -193,14 +193,14 @@ onMounted(() => {
             "
           >
             <VIcon icon="mdi-alert-circle-outline" style="color: #70a1e5" />
-            <vue-countdown
+            <Countdown
               @end="onCountdownEnd"
               :time="remainingTime"
               v-slot="{ totalSeconds }"
             >
               {{ $t("Please_wait") }}：{{ totalSeconds }}
               {{ $t("seconds_before_requesting_another") }}.
-            </vue-countdown>
+            </Countdown>
           </div>
         </VCard>
       </div>

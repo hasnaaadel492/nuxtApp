@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import SnakbarComponent from "@/@core/components/SnakbarComponent.vue";
 import { useSnackbarStore } from "~/stores/useSnackbar";
+import MainButton from "~/@core/components/buttons/mainButton.vue";
+
 const snackbarStore = useSnackbarStore();
 import AppHeading from "@/@core/components/AppHeading.vue";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
@@ -73,34 +75,40 @@ const form = ref(null); // Reference to the form
 
 const sendMessage = async () => {
   if (name.value && email.value && message.value && phone.value) {
-    try {
-      const { $axios } = useNuxtApp();
+    const { $axios } = useNuxtApp();
 
-      const res = await $axios.post("/support-ticket/support-tickets", {
+    $axios("/support-ticket/support-tickets", {
+      method: "POST",
+      data: {
         name: name.value,
         email: email.value,
         phone: phone.value,
         message: message.value,
+      },
+    })
+      .then((res) => {
+        snackbarStore.showSnackbar(res.data.message, res.data.status);
+
+        showPhoneInput.value = false;
+        setTimeout(() => {
+          showPhoneInput.value = true;
+        }, 1);
+
+        // Reset form fields
+        phone.value = "";
+        name.value = "";
+        email.value = "";
+        message.value = "";
+
+        // Clear results
+        results.value = {};
+      })
+      .catch((error) => {
+        snackbarStore.showSnackbar(
+          error.response.data.message,
+          error.response.data.status
+        );
       });
-
-      snackbarStore.showSnackbar(res.data.message, res.data.status);
-
-      showPhoneInput.value = false;
-      setTimeout(() => {
-        showPhoneInput.value = true;
-      }, 1);
-
-      name.value = "";
-      email.value = "";
-      message.value = "";
-      phone.value = "";
-      results.value = null;
-    } catch (error: any) {
-      snackbarStore.showSnackbar(
-        error.response.data.message,
-        error.response.data.status
-      );
-    }
   } else {
     snackbarStore.showSnackbar(
       useCookie("lang").value === "ar"

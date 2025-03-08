@@ -21,6 +21,7 @@
     "libphonenumber-js": "^1.11.20",
     "maz-ui": "^3.50.1",
     "nuxt": "^3.15.4",
+    "nuxt-countdown": "^1.2.0",
     "pinia": "^3.0.1",
     "primeicons": "^7.0.0",
     "vue": "latest",

@@ -35,6 +35,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "maz-ui/nuxt",
     "vue3-carousel-nuxt",
+    "nuxt-countdown",
   ],
   // plugins: ["~/plugins/vuetify.js"],
 

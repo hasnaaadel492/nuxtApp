@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from "@/stores/authStore";
+import CouponInput from "~/@core/components/CouponInput.vue";
 import PackageCard from "@/components/packages/PackageCard.vue";
 import { usePackageStore } from "@/stores/packageStore";
 import { registerStore } from "@/stores/registerStore";

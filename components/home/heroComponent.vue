@@ -20,11 +20,10 @@ interface Props {
   header?: header;
 }
 
-watchEffect(() => {
-  const lang = useCookie("lang");
-
-  nextTick(() => {
-    if (lang.value === "en") {
+watch(
+  () => useCookie("lang").value, // Watch the value of the `lang` cookie
+  (newLang) => {
+    nextTick(() => {
       const heroComponent = document.querySelector(".HeroComponent");
 
       if (!heroComponent) {
@@ -39,15 +38,22 @@ watchEffect(() => {
 
         if (elements.length > 0) {
           elements.forEach((element) => {
-            element.style.transform = "rotate(180deg)";
+            if (newLang === "en") {
+              element.style.transform = "rotate(180deg)";
+              console.log("rotated");
+            } else if (newLang === "ar") {
+              element.style.transform = ""; // ✅ Reset transformation when switching to Arabic
+              console.log("reset");
+            }
           });
         } else {
           console.warn(`No elements found for selector: ${selector}`);
         }
       });
-    }
-  });
-});
+    });
+  },
+  { immediate: true } // ✅ Ensures the effect runs immediately on mount
+);
 </script>
 
 <template>

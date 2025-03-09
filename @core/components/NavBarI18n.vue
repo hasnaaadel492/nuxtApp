@@ -10,7 +10,7 @@ const i18nCompLanguages = [
   { label: "العربية", i18nLang: "ar" },
 ];
 
-const handleLangChange = (lang: string) => {
+const handleLangChange = (lang: any) => {
   isAppRtl.value = lang === "ar" ? "true" : "false"; // Store as string (since cookies store strings)
   langCookie.value = lang;
   locale.value = lang;

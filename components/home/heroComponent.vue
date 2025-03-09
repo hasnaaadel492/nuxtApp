@@ -40,10 +40,8 @@ watch(
           elements.forEach((element) => {
             if (newLang === "en") {
               element.style.transform = "rotate(180deg)";
-              console.log("rotated");
             } else if (newLang === "ar") {
               element.style.transform = ""; // ✅ Reset transformation when switching to Arabic
-              console.log("reset");
             }
           });
         } else {

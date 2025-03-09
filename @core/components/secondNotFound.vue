@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useGenerateImageVariant } from "~/@core/composable/useGenerateImageVariant";
 import pages404 from "@/assets/images/pages/404.png";
+import ErrorHeader from "@/@core/components/ErrorHeader.vue";
 
 import miscObj from "@/assets/images/pages/misc-404-object.png";
 import miscMaskDark from "@/assets/images/pages/misc-mask-dark.png";

@@ -1,25 +1,28 @@
 <script lang="ts" setup>
 import loadingGif from "@/assets/images/newLogo2.png";
-
+import NotFound from "~/@core/components/NotFound.vue";
 const subtitle = ref("");
 const mainPargraph = "mainPargraph";
-
+const errorDescription = ref();
+const pageNotFound = ref(false);
 const route = useRoute();
 
 const applications_section = ref({});
 
 const fetchApplication = async () => {
   try {
-    const { $api } = useNuxtApp();
+    const { $axios } = useNuxtApp();
 
-    const data = await $api<{}>(
+    const res = await $axios<{}>(
       `/applications-section/applications-section/${route.params.id}`
     );
 
-    applications_section.value = data.body.applications_section;
+    applications_section.value = res.data.body.applications_section;
     subtitle.value = applications_section.value.title;
   } catch (error) {
     console.error("Error fetching devices:", error);
+    errorDescription.value = error.response.data.message;
+    pageNotFound.value = true;
   }
 };
 
@@ -67,8 +70,14 @@ onMounted(() => {
     </div>
 
     <img class="hero-circel1" src="@/assets/images/hero-circle1.svg" alt="" />
-
-    <VContainer>
+    <div
+      v-if="pageNotFound"
+      class="d-flex"
+      style="width: 100%; justify-content: center"
+    >
+      <NotFound :errorDescription="errorDescription" />
+    </div>
+    <VContainer v-else>
       <div class="blogsContainer">
         <VRow>
           <VCol cols="12" md="12" sm="12" class="blog-card">

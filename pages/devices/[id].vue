@@ -30,12 +30,13 @@ const pageNotFound = ref(false);
 const fetchDevice = async () => {
   try {
     const { $axios } = useNuxtApp();
-    const data = await $axios<{
+    const res = await $axios<{
       body: {};
     }>(`/devices/devices/${route.params.id}`);
-    device_section.value = data.body.devices;
-    subtitle.value = data.body.devices.title;
-    device_section_status.value = data.body.devices.is_active;
+
+    device_section.value = res.data.body.devices;
+    subtitle.value = res.data.body.devices.title;
+    device_section_status.value = res.data.body.devices.is_active;
   } catch (error) {
     errorDescription.value = error.response.data.message;
     pageNotFound.value = true;

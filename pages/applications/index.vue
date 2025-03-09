@@ -4,7 +4,6 @@ const subtitle = "applications";
 const mainPargraph = "mainPargraph";
 watchEffect(() => {
   const lang = useCookie("lang");
-  console.log(lang.value);
 
   if (lang.value === "en") {
     nextTick(() => {

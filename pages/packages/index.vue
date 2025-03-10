@@ -19,6 +19,35 @@ onMounted(() => {
     console.error("Snap Pixel (snaptr) is not loaded yet.");
   }
 });
+
+watchEffect(() => {
+  const lang = useCookie("lang");
+
+  if (lang.value === "en") {
+    nextTick(() => {
+      const packagesComponent = document.querySelector(".packagesComponent");
+
+      if (!packagesComponent) {
+        console.warn("`.packagesComponent` not found in the DOM.");
+        return;
+      }
+
+      const selectors = [".hero-circel1", ".hero-circel2"];
+
+      selectors.forEach((selector) => {
+        const elements = packagesComponent.querySelectorAll(selector);
+
+        if (elements.length === 0) {
+          console.warn(`No elements found for selector: ${selector}`);
+        } else {
+          elements.forEach((element) => {
+            element.style.transform = "rotate(180deg)";
+          });
+        }
+      });
+    });
+  }
+});
 </script>
 
 <template>

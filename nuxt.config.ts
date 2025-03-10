@@ -13,9 +13,6 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "حل",
-      htmlAttrs: {
-        lang: "ar",
-      },
 
       meta: [
         { charset: "utf-8" },

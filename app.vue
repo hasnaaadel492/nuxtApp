@@ -6,8 +6,15 @@ import AppHeader from "~/@core/components/AppHeader.vue";
 import ScrollToTop from "~/@core/components/ScrollToTop.vue";
 import WhatsAppIcon from "@/@core/components/WhatsAppIcon.vue";
 
-const lang = useCookie("lang");
-const isAppRtl = useCookie("isAppRtl");
+const { locale } = useI18n();
+const langCookie = useCookie("lang", { default: () => "ar" });
+const isAppRtl = useCookie("isAppRtl", { default: () => "true" });
+
+// Ensure default values
+if (!langCookie.value) langCookie.value = "ar";
+// if (!isAppRtl.value) isAppRtl.value = "true";
+
+locale.value = langCookie.value; // Set the Nuxt i18n locale
 
 const metaTags = ref([]);
 const { $axios } = useNuxtApp();
@@ -24,14 +31,14 @@ const fetchMetaTags = async () => {
 const dynamicTitle = computed(() => {
   const titleTag = metaTags.value.find((tag) => tag.name === "title");
   return titleTag
-    ? titleTag.translation.content[lang.value] || titleTag.content
+    ? titleTag.translation.content[langCookie.value] || titleTag.content
     : "Default Title";
 });
 // Compute dynamic meta tags
 const dynamicMeta = computed(() =>
   metaTags.value.map((tag) => ({
     name: tag.name,
-    content: tag.translation.content[lang.value] || tag.content,
+    content: tag.translation.content[langCookie.value] || tag.content,
   }))
 );
 

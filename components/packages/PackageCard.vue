@@ -68,14 +68,25 @@ const registerData = registerStore();
 const accessToken = useCookie("accessToken").value;
 
 const selectPackage = (packageDetails: any) => {
-  useCookie("packageId").value = packageDetails.id;
-  useCookie("packageDetails").value = JSON.stringify(packageDetails);
+  // Get cookie references once
+  const packageIdCookie = useCookie("packageId");
+  const packageDetailsCookie = useCookie("packageDetails");
 
-  registerData.setPackageId(useCookie("packageId").value);
-  console.log(useCookie("packageId").value);
+  // Set values correctly
+  packageIdCookie.value = packageDetails.id;
+  packageDetailsCookie.value = JSON.stringify(packageDetails);
 
-  packageStore.setPackage(useCookie("packageDetails").value);
+  // Ensure registerData gets the correct value
+  registerData.setPackageId(packageIdCookie.value);
+  // console.log("Stored packageId:", packageIdCookie.value);
+  // console.log("Stored packageDetails:", packageDetails);
 
+  // console.log("Cookie packageDetails:", packageDetailsCookie.value);
+
+  // Ensure store gets the correct parsed value
+  packageStore.setPackage(JSON.parse(packageDetailsCookie.value!));
+
+  // Redirect based on accessToken
   if (accessToken) {
     router.push("/contactUS");
   } else {

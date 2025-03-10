@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const subtitle = "devices";
 const mainPargraph = "mainPargraph";
-
+import AppHeading from "~/@core/components/AppHeading.vue";
 watchEffect(() => {
   const lang = useCookie("lang");
 

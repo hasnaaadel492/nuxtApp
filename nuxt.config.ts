@@ -12,11 +12,14 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: "7lPos",
+      title: "حل",
+      htmlAttrs: {
+        lang: "ar",
+      },
+
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "description", content: "Accounting solution program" },
       ],
       link: [
         {
@@ -37,16 +40,16 @@ export default defineNuxtConfig({
     "vue3-carousel-nuxt",
     "nuxt-countdown",
   ],
-  // plugins: ["~/plugins/vuetify.js"],
+  plugins: ["~/plugins/vuetify.js"],
 
   i18n: {
     locales: [
-      { code: "en", iso: "en-US", file: "en.json" },
-      { code: "ar", iso: "ar-SA", file: "ar.json" },
+      { code: "en", iso: "en-US", file: "en.json", dir: "ltr" },
+      { code: "ar", iso: "ar-SA", file: "ar.json", dir: "rtl" },
     ],
-    lazy: true,
-    langDir: "locales/",
     defaultLocale: "ar",
+
+    langDir: "locales/",
     strategy: "no_prefix",
     detectBrowserLanguage: {
       useCookie: true,

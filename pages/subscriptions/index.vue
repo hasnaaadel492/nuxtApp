@@ -30,7 +30,7 @@ onMounted(() => {
     window.snaptr("track", "START_CHECKOUT", {
       price: newTotalAfterDiscount.value
         ? parseFloat(newTotalAfterDiscount.value) * 100
-        : (packageDetails?.total || 0) * 100,
+        : (packageAmount || 0) * 100,
       currency: "INSERT_CURRENCY",
       item_ids: ["INSERT_ITEM_ID_1", "INSERT_ITEM_ID_2"],
       item_category: "INSERT_ITEM_CATEGORY",

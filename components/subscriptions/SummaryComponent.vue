@@ -117,7 +117,6 @@ onMounted(() => {
 <template>
   <div class="summary">
     <!-- Package Card -->
-    registerData {{ registerData }}
     <SnakbarComponent />
     <div class="packageCard mb-6">
       <PackageCard

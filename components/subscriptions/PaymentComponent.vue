@@ -4,9 +4,9 @@ import { onMounted } from "vue";
 // Set the text direction based on the language preference
 const lang = useCookie("lang").value;
 const packageId = useCookie("packageId").value;
+const packageAmount = useCookie("packageAmount").value;
 const couponCode = useCookie("couponCode").value;
 const newTotalAfterDiscount = ref(useCookie("NewTotalAfterDiscount").value);
-const packageDetails = useCookie("packageDetails").value || "{}";
 
 const direction = lang == "ar" ? "rtl !important" : "ltr !important";
 
@@ -35,7 +35,7 @@ const initMoyasar = () => {
     element: ".mysr-form",
     amount: newTotalAfterDiscount.value
       ? parseFloat(newTotalAfterDiscount.value) * 100
-      : (packageDetails?.total || 0) * 100,
+      : (packageAmount || 0) * 100,
 
     currency: "SAR",
     description: "description",
@@ -56,7 +56,7 @@ const initMoyasar = () => {
         snaptr("track", "SUBSCRIBE", {
           price: newTotalAfterDiscount.value
             ? parseFloat(newTotalAfterDiscount.value) * 100
-            : (packageDetails?.total || 0) * 100,
+            : (packageAmount || 0) * 100,
           currency: "SAR",
           transaction_id: "INSERT_TRANSACTION_ID",
           number_items: "INSERT_NUMBER_ITEMS",
@@ -240,7 +240,7 @@ onMounted(() => {
       snaptr("track", "ADD_BILLING", {
         price: newTotalAfterDiscount.value
           ? parseFloat(newTotalAfterDiscount.value) * 100
-          : (packageDetails?.total || 0) * 100,
+          : (packageAmount || 0) * 100,
         currency: "SAR",
         uuid_c1: "INSERT_UUID_C1",
         user_email: "INSERT_USER_EMAIL",

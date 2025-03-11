@@ -4,7 +4,7 @@ const { $axios } = useNuxtApp();
 const couponCode = ref("");
 const ErrorMessage = ref("");
 const SuccessMessage = ref("");
-const selectedPackage = useCookie("packageDetails").value;
+const packageId = useCookie("packageId").value;
 
 const newPackageTotals = ref({
   price_before_tax: "",
@@ -26,7 +26,7 @@ const verifyCoupon = () => {
     $axios
       .post("/coupon/apply-coupon", {
         code: couponCode.value,
-        model_id: selectedPackage.id,
+        model_id: packageId,
         model_type: "packages",
       })
 

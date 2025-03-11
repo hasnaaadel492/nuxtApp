@@ -32,7 +32,7 @@ const dynamicTitle = computed(() => {
   const titleTag = metaTags.value.find((tag) => tag.name === "title");
   return titleTag
     ? titleTag.translation.content[langCookie.value] || titleTag.content
-    : "Default Title";
+    : "حل";
 });
 // Compute dynamic meta tags
 const dynamicMeta = computed(() =>

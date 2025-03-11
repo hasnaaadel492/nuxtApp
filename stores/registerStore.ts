@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useAuthStore } from "@/stores/authStore";
 import { useCookie } from "#app";
-
+const { $api, navigateTo } = useNuxtApp();
 export const registerStore = defineStore("registerStore", {
   state: () => ({
     tenant_owner: {

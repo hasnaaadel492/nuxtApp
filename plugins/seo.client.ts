@@ -26,9 +26,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         },
         {
           property: "og:title",
-          content:
-            seoData.find((tag) => tag.name === "title")?.content ||
-            "Default title",
+          content: seoData.find((tag) => tag.name === "title")?.content || "حل",
         },
         {
           property: "og:url",

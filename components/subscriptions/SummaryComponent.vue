@@ -12,7 +12,32 @@ import formatNumber from "@/@core/utils/formattedNumber";
 
 const packageStore = usePackageStore();
 const registerData = registerStore();
-const selectedPackage = useCookie("packageDetails").value;
+const selectedPackage = ref({});
+const packageId = useCookie("packageId").value;
+// const selectedPackage = useCookie("packageDetails").value;
+const getSelectedPackage = ref(false);
+
+const fetchPackages = async () => {
+  try {
+    const { $api } = useNuxtApp();
+    const data = await $api<{}>("/package/packages");
+    const packages = data.body.packages.data;
+
+    // Find the selected package based on packageId
+    const foundPackage = packages.find((pkg) => pkg.id === parseInt(packageId));
+
+    if (foundPackage) {
+      selectedPackage.value = foundPackage;
+      console.log("Selected Package:", selectedPackage.value);
+      getSelectedPackage.value = true;
+    } else {
+      console.warn("Package not found with ID:", packageId);
+    }
+  } catch (error) {
+    console.error("Error fetching packages:", error);
+  }
+};
+
 const route = useRoute();
 const isRenewSubscriptionRoute = computed(() => {
   return route.path === "/subscriptions/renewSubscription";
@@ -84,15 +109,22 @@ const register = async () => {
     }
   });
 };
+onMounted(() => {
+  fetchPackages();
+});
 </script>
 
 <template>
   <div class="summary">
     <!-- Package Card -->
+    registerData {{ registerData }}
     <SnakbarComponent />
-
     <div class="packageCard mb-6">
-      <PackageCard :package="selectedPackage" :is-center="true" />
+      <PackageCard
+        :package="selectedPackage"
+        :is-center="true"
+        v-if="getSelectedPackage"
+      />
     </div>
 
     <div class="coupon-input">

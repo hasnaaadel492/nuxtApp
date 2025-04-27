@@ -330,7 +330,7 @@ const results = ref({});
       border-radius: 32px;
       background-color: #f3f8f9;
       gap: 10px;
-      padding-block: 16px 0;
+      padding-block: 16px;
       padding-inline-start: 33px;
 
       .iconDiv {

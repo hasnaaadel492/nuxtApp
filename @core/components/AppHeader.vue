@@ -81,7 +81,7 @@
             </button>
           </NuxtLink>
 
-          <NuxtLink
+          <!-- <NuxtLink
             to="/packages"
             v-if="!auth.isAuthenticated"
             @click="hideSideNav"
@@ -89,7 +89,14 @@
             <MainButton
               :content="buttoncontent"
               class="headerButton d-flex align-center"
-          /></NuxtLink>
+          /></NuxtLink> -->
+
+          <button @click="getFreePackage" v-if="!auth.isAuthenticated">
+            <MainButton
+              :content="buttoncontent"
+              class="headerButton d-flex align-center"
+            />
+          </button>
         </div>
       </div>
     </transition>
@@ -165,7 +172,7 @@
               </button>
             </NuxtLink>
 
-            <NuxtLink
+            <!-- <NuxtLink
               to="/packages"
               v-if="!auth.isAuthenticated"
               @click="hideSideNav"
@@ -173,7 +180,13 @@
               <MainButton
                 :content="buttoncontent"
                 class="headerButton d-flex align-center"
-            /></NuxtLink>
+            /></NuxtLink> -->
+            <button @click="getFreePackage" v-if="!auth.isAuthenticated">
+              <MainButton
+                :content="buttoncontent"
+                class="headerButton d-flex align-center"
+              />
+            </button>
           </div>
           <!-- <AppUserHeader v-if="token" style="margin-top: 6px" /> -->
           <AppUserHeader v-if="auth.isAuthenticated" style="margin-top: 6px" />
@@ -193,11 +206,12 @@ import MainButton from "@/@core/components/buttons/mainButton.vue";
 import AppUserHeader from "@/@core/components/AppUserHeader.vue";
 import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
+const buttoncontent = ref<string>("try_now");
 
 // Reactive data properties
 const sideNavIsVisable = ref<boolean>(false);
 
-const buttoncontent = ref<string>("joinUs");
+// const buttoncontent = ref<string>("joinUs");
 const isScrolled = ref<boolean>(false);
 
 const auth = useAuthStore();
@@ -215,6 +229,26 @@ const hideSideNav = (): void => {
 
 const handleScroll = (): void => {
   isScrolled.value = window.scrollY > 0;
+};
+const router = useRouter();
+
+const getFreePackage = () => {
+  const trailPackageId = useCookie("trailPackageId");
+  const { $axios } = useNuxtApp();
+
+  $axios.get("/package/get-free-trial-package").then((res) => {
+    trailPackageId.value = res.data.body.package.id;
+    // registerData.setPackageId(localStorage.getItem('trailPackageId'))
+
+    console.log(localStorage.getItem("trailPackageId"));
+    hideSideNav();
+    localStorage.setItem(
+      "trailPackageDetails",
+      JSON.stringify(res.data.body.package)
+    );
+
+    router.push("/subscriptions");
+  });
 };
 
 onMounted(() => {

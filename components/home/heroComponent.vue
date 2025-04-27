@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { watchEffect, nextTick } from "vue";
+import HomeCarousel from "./HomeCarousel.vue";
 
 const buttonContent = "joinUs";
 const props = withDefaults(defineProps<Props>(), {
@@ -80,10 +81,15 @@ watch(
         /></router-link>
       </div>
       <div class="dashboardImage moveUpDown">
-        <img :src="props.header.image" />
+        <!-- <img :src="props.header.image" /> -->
       </div>
     </div>
     <img class="hero-circel2" src="@/assets/images/hero-circle2.svg" alt="" />
+    <div>
+      <VContainer>
+        <HomeCarousel :header="props.header" />
+      </VContainer>
+    </div>
   </div>
 </template>
 
